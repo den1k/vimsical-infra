@@ -1,0 +1,17 @@
+---
+# Common ubuntu config
+#
+
+- name: 'install missing deps'
+  raw: sudo apt-get -y install python-minimal aptitude
+
+- name: apt update and ugrade
+  apt: update_cache=true upgrade=true
+
+- name: install common packages
+  apt: 
+    pkg: "{{ item }}"
+    state: present
+  with_items:
+    - apt-transport-https
+    - htop

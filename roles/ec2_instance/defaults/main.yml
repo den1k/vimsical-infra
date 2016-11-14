@@ -1,0 +1,9 @@
+---
+image: "{{ aws_ami_ssd }}"
+region: "{{ aws_region }}"
+key_name: "{{ aws_key_name }}"
+termination_protection: false
+monitoring: true
+count: 1
+wait: true
+public: false

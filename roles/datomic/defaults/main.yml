@@ -1,0 +1,5 @@
+---
+datomic_version: 0.9.5394
+datomic_download_dir: /tmp/datomic
+datomic_home: "/usr/local/bin/datomic-pro-{{ datomic_version }}"
+datomic_url: "https://my.datomic.com/repo/com/datomic/datomic-pro/{{ datomic_version }}/datomic-pro-{{ datomic_version }}.zip"

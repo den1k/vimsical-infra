@@ -1,0 +1,20 @@
+---
+# Pull and install vimsical's om.next fork
+#
+
+- name: create directory
+  file:
+    path: "{{ om_dir }}"
+    state: directory
+
+- name: clone repo
+  git:
+    repo: https://github.com/vimsical/om.git
+    version: "{{ om_branch }}"
+    dest: "{{ om_dir }}"
+    update: true
+
+- name: install
+  command: lein install
+  args: 
+    chdir: "{{ om_dir }}"

@@ -1,0 +1,34 @@
+---
+# Download and extract datomic pro
+#
+
+- name: install zip
+  apt: pkg=unzip
+
+- name: create download dir
+  file:
+    path: "{{ datomic_download_dir }}"
+    state: directory
+
+- name: create datomic home dir
+  file:
+    path: "{{ datomic_home }}"
+    state: directory
+
+- name: download archive
+  get_url:
+    url_username: "{{ datomic_login }}"
+    url_password: "{{ datomic_password }}"
+    url: "{{ datomic_url }}"
+    dest: "{{ datomic_download_dir }}/datomic.zip"
+
+- name: unzip to datomic home dir
+  unarchive:
+    remote_src: true
+    src: "{{ datomic_download_dir }}/datomic.zip"
+    dest: "{{ datomic_home }}"
+
+- name: cleanup tmp files
+  file:
+    path: "{{ datomic_download_dir }}"
+    state: absent

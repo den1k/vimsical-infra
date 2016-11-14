@@ -1,0 +1,5 @@
+---
+dependencies:
+  - { role: jdk8 }
+  - { role: datastax }
+

@@ -1,0 +1,15 @@
+---
+# Infrastructure configuration playbook
+#
+
+- name: setup ssh on driver
+  hosts: localhost
+  connection: local
+  gather_facts: false
+  roles: 
+    - { role: ec2_keypair }
+
+- include: cassandra/configure.yml
+
+# - include: api/configure.yml
+# - include: transactor/configure.yml

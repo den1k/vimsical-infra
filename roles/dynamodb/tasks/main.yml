@@ -1,0 +1,31 @@
+---
+# Datomic Dynamodb storage
+#
+
+- name: create s3 log bucket
+  s3_bucket: name={{ ddb_s3_log_bucket }}
+
+- name: create dynamo table
+  dynamodb_table:
+    name: "{{ ddb_table }}"
+    region: "{{ aws_region }}"
+    hash_key_name: id
+    hash_key_type: STRING
+    read_capacity: 2
+    write_capacity: 2
+
+- name: create IAM transactor role
+  iam:
+    iam_type: role
+    name: datomic_transactor
+    state: present
+    access_key_state: create
+    policy_json: " {{ lookup( 'template', 'transactor_policy.json.j2') }} "
+
+- name: create IAM peer role
+  iam:
+    iam_type: role
+    name: "{{ datomic_peer_role }}"
+    state: present
+    access_key_state: create
+    policy_json: " {{ lookup( 'template', 'peer_policy.json.j2') }} "

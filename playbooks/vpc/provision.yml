@@ -1,0 +1,18 @@
+---
+# Provision a VPC and associated security groups
+#
+
+- name: provision VPC
+  hosts: localhost
+  connection: local
+  gather_facts: false
+  roles:
+    - { role: vpc }
+  tasks:
+    - include: security_groups/ssh.yml
+    - include: security_groups/alb.yml
+    - include: security_groups/api.yml
+    - include: security_groups/redis.yml
+    - include: security_groups/datomic.yml
+    - include: security_groups/cassandra.yml
+

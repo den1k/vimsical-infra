@@ -1,0 +1,20 @@
+---
+# API provisioning
+#
+
+- name: Provision cassandra cluster
+  hosts: localhost
+  connection: local
+  gather_facts: false
+  vars:
+    name: "{{env_name }}_api
+    group: "{{ api_sg }}"
+    instance_type: m3.large
+    image: "{{ aws_ami_ssd }}"
+    monitoring: true
+    count: 2
+
+  roles:
+    - { role: ec2_instance }
+  
+

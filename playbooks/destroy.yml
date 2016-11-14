@@ -1,0 +1,6 @@
+---
+# Destroy environment
+#
+
+- include: vpc/destroy.yml
+- include: cassandra/destroy.yml

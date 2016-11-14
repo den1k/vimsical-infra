@@ -1,0 +1,27 @@
+---
+# AWS defaults
+#
+aws_region: us-west-2
+aws_ami_ssd: ami-a9d276c9
+
+# Environment depdent values
+#
+
+# Keypairs
+aws_key_name: "{{ env_name }}_key"
+aws_private_key: "~/.ssh/{{ env_name}}.pem"
+ansible_ssh_private_key_file: "~/.ssh/{{ env_name}}.pem"
+ansible_ssh_user: ubuntu
+
+# Security groups
+ssh_sg: "{{ env_name }}_ssh_sg"
+alb_sg: "{{ env_name }}_alb_sg"
+transactor_sg: "{{ env_name }}_transactor_sg"
+peer_sg: "{{ env_name }}_peer_sg"
+api_sg: "{{ env_name }}_api_sg"
+redis_sg: "{{ env_name }}_redis_sg"
+dynamo_sg: "{{ env_name }}_dynamo_sg"
+cassandra_sg: "{{ env_name }}_cassandra_sg"
+opscenter_sg: "{{ env_name }}_opscenter_sg"
+
+

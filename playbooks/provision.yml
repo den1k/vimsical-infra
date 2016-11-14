@@ -1,0 +1,19 @@
+---
+# Provision AWS infrastructure
+#
+
+- name: provision infrastructure
+  hosts: localhost
+  connection: local
+  gather_facts: false
+  roles:
+    - { role: ec2_keypair }
+
+- include: vpc/provision.yml
+- include: cassandra/provision.yml
+
+# - include: redis/provision.yml
+# - include: alb/provision.yml
+# - include: transactor/provision.yml
+# - include: api/provision.yml
+ 

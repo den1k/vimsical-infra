@@ -1,0 +1,11 @@
+---
+# Compile and deploy cljs app
+#
+
+- name: compile cljs
+  command: lein do clean, cljsbuild once prod
+
+# site now in resources/public...
+
+- name: upload resources to cloudfront
+

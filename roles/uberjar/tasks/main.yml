@@ -1,0 +1,27 @@
+---
+# Pull the app repo and cut a jar
+#
+
+- name: create repo directory
+  file: >-
+    path={{ clone_dir }}
+    state=directory
+
+- name: pull repo
+  git: >-
+    repo={{ uberjar_repo }}
+    dest={{ clone_dir }}
+    update=true
+    accept_hostkey=true
+    force=true
+    key_file=~/.ssh/id_rsa
+
+- name: create uberjar
+  command: lein uberjar
+  args: >-
+    chdir={{ clone_dir }}
+
+- name: delete repo
+  file: >-
+    path={{ clone_dir }}
+    state=absent

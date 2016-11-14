@@ -1,0 +1,32 @@
+---
+# Configure Cassandra nodes and OpsCenter
+#
+
+# Workaround
+# https://github.com/ansible/ansible/issues/9260
+
+- name: workaround
+  hosts: all
+  tasks: []
+  tags: 
+    - configure
+
+# Cassandra
+#
+- hosts: "tag_Name_{{ env_name }}_cassandra"
+  become: true
+  vars:
+    cassandra_cluster_name: "vimsical_{{ env_name }}"
+  roles:
+    - { role: cassandra, tags: ["configure"] }
+    - { role: opscenter_agent, tags: ["configure"] }
+
+# OpsCenter
+#
+- hosts: "tag_Name_{{ env_name }}_opscenter"
+  become: true
+  vars:
+    cassandra_cluster_name: "vimsical_{{ env_name }}"
+  roles:
+    - { role: opscenter_server, tags: ["configure"] }
+

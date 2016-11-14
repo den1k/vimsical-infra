@@ -1,0 +1,15 @@
+---
+# Install leiningen
+#
+
+- name: download latest leiningen release
+  get_url:
+    url: https://raw.github.com/technomancy/leiningen/stable/bin/lein
+    dest: /usr/local/bin/lein
+  
+- name: make lein executable
+  file: path=/usr/local/bin/lein mode=755
+      
+- name: lein bootstrap
+  command: lein version
+  

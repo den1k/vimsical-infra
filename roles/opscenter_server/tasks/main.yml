@@ -1,0 +1,27 @@
+---
+# Configure OpsCenter
+#
+
+- name: install opscenter
+  apt: pkg=opscenter state=present
+
+- name: template opscenterd.conf
+  template:
+    src: opscenterd.j2
+    dest: /etc/opscenter/opscenterd.conf
+    mode: 0644
+
+- name: create /etc/opscenter/clusters
+  file: path=/etc/opscenter/clusters state=directory
+
+- name: template cluster config
+  template: 
+    src: cluster.j2
+    dest: "/etc/opscenter/clusters/{{ cassandra_cluster_name }}.conf"
+    mode: 0644
+
+- name: stop opscenter service
+  service: name=opscenterd state=stopped
+
+- name: start opscenter service
+  service: name=opscenterd state=started

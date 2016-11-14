@@ -1,0 +1,16 @@
+---
+# Datomic transactor provisioning
+#
+
+- name: Provision transactor
+  hosts: localhost
+  connection: local
+  gather_facts: false
+  vars:
+    name: transactor
+    group: "{{ transactor_sg }}"
+    instance_type: m3.large
+    image: "{{ aws_ami_ssd }}"
+  roles:
+    - { role: ec2_instance }
+  

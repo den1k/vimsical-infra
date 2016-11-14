@@ -1,0 +1,27 @@
+---
+# Create a VPC and internet gateway
+#
+
+- name: create vpc
+  ec2_vpc:
+    state: present
+    region: "{{ aws_region }}"
+    cidr_block: "{{ vpc_cidr_block }}"
+    resource_tags: { "Name": "{{ env_name }}_vpc", "Environment": "{{ env_name }}" }
+    subnets: "{{ vpc_subnets }}" 
+    route_tables: "{{ public_subnet_rt }}"
+    internet_gateway: yes
+  register: vpc
+  tags:
+    - provision
+
+- name: destroy vpc
+  ec2_vpc:
+    state: absent
+    region: "{{ aws_region }}"
+    cidr_block: "{{ vpc_cidr_block }}"
+    resource_tags: { "Name": "{{ env_name }}_vpc", "Environment": "{{ env_name }}" }
+    subnets: "{{ vpc_subnets }}" 
+    route_tables: "{{ public_subnet_rt }}"
+  tags:
+    - destroy

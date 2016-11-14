@@ -1,0 +1,4 @@
+---
+- hosts: api_nodes
+  roles:
+  - { role: uberjar }

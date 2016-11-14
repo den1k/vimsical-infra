@@ -1,0 +1,15 @@
+{
+  "Version": "{{ ansible_date_time.date }}",
+  "Statement": [
+    {
+      "Effect": "Allow",
+      "Action": [
+        "dynamodb:GetItem",
+        "dynamodb:BatchGetItem",
+        "dynamodb:Scan",
+        "dynamodb:Query"
+      ],
+      "Resource": "arn:aws:dynamodb:*:{{ aws_account_id }}:table/{{ ddb_table_name }}"
+    }
+  ]
+}

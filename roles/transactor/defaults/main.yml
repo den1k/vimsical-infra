@@ -1,0 +1,15 @@
+---
+# Directories
+datomic_data_dir: /var/datomic/data
+datomic_log_dir: /var/datomic/log
+datomic_config_dir: /var/datomic/config
+# DynamoDB settings
+datomic_transactor_properties_template: ddb-transactor.properties.j2
+datomic_transactor_ddb_table: store
+# Recommended settings for -Xmx4g production usage.
+datomic_transactor_ram: 4g
+datomic_transactor_memory_index_threshold: 32m
+datomic_transactor_memory_index_max: 256m
+datomic_transactor_object_cache_max: 128m
+datomic_transactor_write_concurrency: 4
+datomic_transactor_read_concurrency: 8

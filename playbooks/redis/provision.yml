@@ -1,0 +1,20 @@
+- name: Provision VPC and security groups
+  hosts: localhost
+  connection: local
+  gather_facts: false
+  tasks:
+    - name: Create elasticache cluster
+      local_action:
+        module: elasticache
+        name: "redis_elasticache_{{ env_name }}"
+        state: present
+        engine: redis
+        node_type: cache.m1.small
+        num_nodes: 1
+        cache_port: "{{ redis_port }}"
+        cache_security_groups:
+        cache_subnet_group:
+        security_group_ids:
+          - "{{ redis_sg }}"
+        zone: "{{ aws_zone }}"
+        wait: true

@@ -1,0 +1,47 @@
+---
+# Provision ALB
+#
+
+# TODO register ARN from alb creation:
+# http://stackoverflow.com/questions/39946284/how-do-i-register-a-variable-in-ansible-pulled-from-json-output
+
+- name: Provision ALB
+  hosts: localhost
+  connection: local
+  gather_facts: false
+  vars:
+    alb_name: "{{ env_name }}_alb"
+  tasks:
+    - name: create ALB
+      command: >-
+        aws elbv2 create-load-balancer
+        --name {{ alb_name }}
+        --subnets {{ vpc.subnets }}
+        --security-groups {{ alb_sg }}
+        --scheme internet-facing
+        --tags Key=Name,Value={{ alb_name }},Key=Environment,Value={{ env_name }}
+        
+    - name: create http target group
+      command: >-
+        aws elbv2 create-target-group
+          --name {{ alb_name}}-http-target-group
+          --protocol http
+          --port 80
+          --vpc-id {{ vpc.vpc_id }}
+          --health-check-protocol http
+
+    - name: add http listener
+      command: >-
+        aws elbv2 create-listener
+          --load-balancer-arn {{ arn }}
+          --protocol http
+          --port 80
+
+    - name: add https listener
+      command: >-
+        aws elbv2 create-listener
+          --load-balancer-arn {{ arn }}
+          --protocol https
+          --port 443
+          --certificates {{ cert }}
+

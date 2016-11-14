@@ -1,0 +1,11 @@
+[Unit]
+Description = Starts the Datomic transactor (Pro edition)
+
+[Service]
+User = datomic
+Type = simple
+ExecStart = {{ datomic_home }}/bin/transactor -Xms {{ datomic_transactor_ram }} -Xmx {{ datomic_transactor_ram }} {{ datomic_home }}/config/transactor.properties
+Restart = always
+
+[Install]
+WantedBy = multi-user.target

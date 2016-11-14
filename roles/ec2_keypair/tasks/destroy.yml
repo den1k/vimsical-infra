@@ -1,0 +1,13 @@
+---
+# Create an ec2 keypair
+#
+
+- name: destroy keypair
+  ec2_key:
+    name: "{{ aws_key_name }}"
+    state: absent
+
+- name: delete private key
+  file:
+    path: "{{ aws_private_key }}"
+    state: absent

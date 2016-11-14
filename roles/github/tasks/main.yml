@@ -1,0 +1,10 @@
+---
+# Setup ssh to pull from github with user confirmation
+
+- name: add github.com to ssh known hosts
+  lineinfile:
+    dest: "/home/{{ ansible_ssh_user }}/.ssh/known_hosts"
+    create: true
+    state: present
+    line: "{{ lookup('pipe', 'ssh-keyscan -t rsa github.com') }}"
+    regexp: "^github\\.com"

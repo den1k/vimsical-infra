@@ -1,0 +1,34 @@
+---
+# Install oracle's jdk 8
+#
+
+- name: add the webupd8 APT repository
+  apt_repository:
+    repo: ppa:webupd8team/java
+    state: present
+
+- name: set licence selected
+  shell: >-
+    /bin/echo debconf shared/accepted-oracle-license-v1-1 select true | /usr/bin/debconf-set-selections
+
+- name: set licence seen
+  shell: >-
+    /bin/echo debconf shared/accepted-oracle-license-v1-1 seen true | /usr/bin/debconf-set-selections
+
+- name: install oracle jdk
+  apt:
+    pkg: oracle-java8-installer
+    update_cache: true
+    state: present
+
+- name: automatically set up the java 8 environment variables
+  apt:
+    pkg: oracle-java8-set-default
+    state: present
+
+- name: set JAVA_HOME in /etc/profile
+  lineinfile:
+    dest: '/etc/profile'
+    regexp: '^#?\s*export JAVA_HOME=(.*)$'
+    line: 'export JAVA_HOME=/usr/lib/jvm/java-8-oracle'
+    state: present
