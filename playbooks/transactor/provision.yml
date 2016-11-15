@@ -8,7 +8,9 @@
   gather_facts: false
   vars:
     name: transactor
-    group: "{{ transactor_sg }}"
+    groups: 
+      - "{{ ssh_sg }}"
+      - "{{ transactor_sg }}"
     instance_type: m3.large
     image: "{{ aws_ami_ssd }}"
   roles:

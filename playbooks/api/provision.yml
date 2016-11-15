@@ -7,8 +7,10 @@
   connection: local
   gather_facts: false
   vars:
-    name: "{{env_name }}_api
-    group: "{{ api_sg }}"
+    name: "{{env_name }}_api"
+    groups: 
+      - "{{ ssh_sg }}"
+      - "{{ api_sg }}"
     instance_type: m3.large
     image: "{{ aws_ami_ssd }}"
     monitoring: true

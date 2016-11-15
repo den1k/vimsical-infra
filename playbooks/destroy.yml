@@ -2,5 +2,7 @@
 # Destroy environment
 #
 
-- include: vpc/destroy.yml
-- include: cassandra/destroy.yml
+- include: cassandra/provision.yml
+- include: vpc/provision.yml
+
+# TODO extract sgs in playbook and destroy them first so we can destroy the vpc

@@ -2,6 +2,8 @@
 seeds_group: "tag_Name_{{ env_name }}_cassandra"
 seeds_sg: "{{ env_name }}_cassandra_sg"
 cassandra_max_seed_nodes: 3
+# TODO this is a hack to only uses the first host 
+# Need to find a way to get the full list 
 cassandra_seeds: "{{ hostvars[groups[seeds_group][0]]['ansible_default_ipv4']['address'] }}"
 
 

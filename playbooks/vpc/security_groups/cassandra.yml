@@ -1,47 +1,4 @@
 ---
-# OpsCenter sg
-#
-
-# TODO Look up opscenter port in role defaults?
-
-- name: create opscenter security group
-  ec2_group:
-    description: OpsCenter security group
-    name: "{{ opscenter_sg }}"
-    region: "{{ aws_region }}"
-    vpc_id: "{{ vpc.vpc_id }}"
-    rules:
-      - proto: tcp
-        from_port: 8888
-        to_port: 8888
-        cidr_ip: 0.0.0.0/0
-      - proto: tcp
-        from_port: 61620
-        to_port: 61620
-        group_name: "{{ cassandra_sg }}"
-      - proto: tcp
-        from_port: 61621
-        to_port: 61621
-        group_name: "{{ cassandra_sg }}"
-      # TODO remove this rule, not necessary with ssh_sg in default groups
-      - proto: tcp
-        from_port: 22
-        to_port: 22
-        cidr_ip: 0.0.0.0/0
-    rules_egress:
-      - proto: all
-        cidr_ip: 0.0.0.0/0
-  tags:
-    - provision
-  
-
-- name: create opscenter security group
-  ec2_group:
-    description: OpsCenter security group
-    name: "{{ opscenter_sg }}"
-  tags: 
-    - destroy
-
 # Cassandra sg
 #
 
@@ -62,31 +19,17 @@
         from_port: 7001
         to_port: 7001
         group_name: "{{ cassandra_sg }}"
-      # JMX monitoring
+      # CQL inter-node
       - proto: tcp
-        from_port: 7199
-        to_port: 7199
+        from_port: 9042
+        to_port: 9042
         group_name: "{{ cassandra_sg }}"
       # CQL clients
       - proto: tcp
         from_port: 9042
         to_port: 9042
         group_name: "{{ api_sg }}"
-      # CQL opscenter
-      - proto: tcp
-        from_port: 9042
-        to_port: 9042
-        group_name: "{{ opscenter_sg }}"
-      # Thrift cluster
-      - proto: tcp
-        from_port: 9160
-        to_port: 9160
-        group_name: "{{ cassandra_sg }}"
-      # Thrift opscenter
-      - proto: tcp
-        from_port: 9160
-        to_port: 9160
-        group_name: "{{ opscenter_sg }}"
+
     rules_egress:
       - proto: all
         cidr_ip: 0.0.0.0/0

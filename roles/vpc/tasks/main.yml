@@ -15,6 +15,21 @@
   tags:
     - provision
 
+# TODO this doesn't work because of dependencies, we should delete instances first
+
+- name: destroy subnets and route tables from VPC
+  ec2_vpc:
+    cidr_block: "{{ vpc_cidr_block }}"
+    resource_tags: { "Name": "{{ env_name }}_vpc", "Environment": "{{ env_name }}" }
+    region: "{{ aws_region }}"
+    state: present
+    subnets: []
+    internet_gateway: false
+    route_tables: []
+    wait: yes
+  tags:
+    - destroy
+
 - name: destroy vpc
   ec2_vpc:
     state: absent

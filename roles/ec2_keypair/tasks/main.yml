@@ -25,3 +25,18 @@
   when: ec2_key.changed
   tags:
     - provision
+
+- name: destroy keypair
+  ec2_key:
+    name: "{{ aws_key_name }}"
+    region: "{{ aws_region }}"
+    state: absent
+  tags:
+    - destroy
+
+- name: delete private key
+  file:
+    path: "{{ aws_private_key }}"
+    state: absent
+  tags:
+    - destroy

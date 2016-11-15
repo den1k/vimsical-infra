@@ -55,7 +55,7 @@ extra-vars = --extra-vars env_name=$(env_name)
 inventory = -i ./inventory/ec2.py
 
 destroy: env
-	ansible-playbook playbooks/provision.yml $(extra-args) $(inventory) $(extra-vars) --tags "destroy"
+	ansible-playbook playbooks/destroy.yml $(extra-args) $(inventory) $(extra-vars) --tags "destroy"
 
 provision: env
 	ansible-playbook playbooks/provision.yml $(flags) $(inventory) $(extra-vars) --tags "provision"

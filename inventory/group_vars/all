@@ -22,6 +22,5 @@ api_sg: "{{ env_name }}_api_sg"
 redis_sg: "{{ env_name }}_redis_sg"
 dynamo_sg: "{{ env_name }}_dynamo_sg"
 cassandra_sg: "{{ env_name }}_cassandra_sg"
-opscenter_sg: "{{ env_name }}_opscenter_sg"
 
 
