@@ -2,7 +2,7 @@
 # Datomic transactor configuration
 #
 
-- hosts: "tag_Name_{{ env_name }}_transactor"
+- hosts: "tag_Group_{{ transactor_group_name }}"
   tags:
     - configure
   roles:

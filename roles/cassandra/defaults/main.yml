@@ -2,7 +2,7 @@
 cassandra_user: cassandra
 cassandra_version: 3.9
 cassandra_cluster_name: vimsical
-seeds_group: "tag_Name_{{ env_name }}_cassandra"
+seeds_group: "tag_Group_{{ cassandra_group_name }}"
 cassandra_max_seed_nodes: 3
 # TODO this is a hack to only uses the first host 
 # We need a way to get the full list 

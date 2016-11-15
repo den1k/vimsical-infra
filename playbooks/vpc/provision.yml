@@ -9,15 +9,18 @@
   vars:
     # Tags - used for identifying the VPC without an id, notably when creating
     #
-    vpc_resource_tags: { "Name": "{{ env_name }}_vpc", "Environment": "{{ env_name }}" }
+    vpc_resource_tags: { "Group": "{{ vpc_group_name }}", "Environment": "{{ env_name }}" }
 
     # CIDR
     #
     vpc_cidr_block: 172.25.0.0/16
+
     public_cidr_1: 172.25.10.0/24
     public_az_1: "{{ aws_region }}a"
+
     public_cidr_2: 172.25.20.0/24
     public_az_2: "{{ aws_region }}b"
+
     private_cidr: 172.25.30.0/24
     private_az: "{{ aws_region }}c"
 
@@ -27,15 +30,15 @@
       # Public Subnet-1
       - cidr: "{{ public_cidr_1 }}"
         az: "{{ public_az_1 }}"
-        resource_tags: { "Name": "{{ public_az_1 }}", "Environment": "{{ env_name }}" }
+        resource_tags: { "Az": "{{ public_az_1 }}", "Environment": "{{ env_name }}" }
       # Public Subnet-2
       - cidr: "{{ public_cidr_2 }}"
         az: "{{ public_az_2 }}"
-        resource_tags: { "Name": "{{ public_az_2 }}", "Environment": "{{ env_name }}" }
+        resource_tags: { "Az": "{{ public_az_2 }}", "Environment": "{{ env_name }}" }
       # Private Subnet
       - cidr: "{{ private_cidr }}"
         az: "{{ private_az }}"
-        resource_tags: { "Name": "{{ private_az }}", "Environment": "{{ env_name }}" }
+        resource_tags: { "Az": "{{ private_az }}", "Environment": "{{ env_name }}" }
 
     # Route table for public subnet
     #

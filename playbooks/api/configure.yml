@@ -2,8 +2,6 @@
 # Configure api hosts
 #
 
-- hosts: tag_Name_api
-  vars:
-    git_repo: "git@github.com:vimsical/vimsical.git"
-  roles:
-  - { role: uberjar }
+- hosts: "tag_Group_{{ api_group_name }}"
+  vars: git_repo: "git@github.com:vimsical/vimsical.git"
+  roles: - { role: uberjar }

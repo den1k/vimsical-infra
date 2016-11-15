@@ -3,8 +3,9 @@
 #
 
 - include: ec2_instance/provisioning.yml
-  name: "{{env_name }}_api"
-  groups: 
+  name: "{{ api_group_name }}"
+  group_name: "{{ api_group_name }}"
+  security_groups:
     - "{{ ssh_sg_name }}"
     - "{{ api_sg_name }}"
   instance_type: m3.large

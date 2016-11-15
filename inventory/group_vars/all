@@ -16,17 +16,30 @@ aws_key_name: "{{ env_name }}_key"
 aws_private_key: "~/.ssh/{{ env_name}}.pem"
 ansible_ssh_private_key_file: "~/.ssh/{{ env_name}}.pem"
 
+# Groups
+#
+vpc_group_name: "{{ env_name}}_vpc"
+ssh_group_name: "{{ env_name }}_ssh"
+alb_group_name: "{{ env_name }}_alb"
+transactor_group_name: "{{ env_name }}_transactor"
+peer_group_name: "{{ env_name }}_peer"
+api_group_name: "{{ env_name }}_api"
+redis_group_name: "{{ env_name }}_redis"
+dynamo_group_name: "{{ env_name }}_dynamo"
+cassandra_group_name: "{{ env_name }}_cassandra"
+
 # Security groups
 #
-ssh_sg_name: "{{ env_name }}_ssh_sg"
-alb_sg_name: "{{ env_name }}_alb_sg"
-transactor_sg_name: "{{ env_name }}_transactor_sg"
-peer_sg_name: "{{ env_name }}_peer_sg"
-api_sg_name: "{{ env_name }}_api_sg"
-redis_sg_name: "{{ env_name }}_redis_sg"
-dynamo_sg_name: "{{ env_name }}_dynamo_sg"
-cassandra_sg_name: "{{ env_name }}_cassandra_sg"
+ssh_sg_name: "{{ ssh_group_name }}_sg"
+alb_sg_name: "{{ alb_group_name }}_sg"
+transactor_sg_name: "{{ transactor_group_name }}_sg"
+peer_sg_name: "{{ peer_group_name }}_sg"
+api_sg_name: "{{ api_group_name }}_sg"
+redis_sg_name: "{{ redis_group_name }}_sg"
+dynamo_sg_name: "{{ dynamo_group_name }}_sg"
+cassandra_sg_name: "{{ cassandra_group_name }}_sg"
 
 # Config
 #
 redis_port: 6379
+cassandra_cluster_name: vimsical

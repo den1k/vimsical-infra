@@ -4,8 +4,9 @@
 
 - include: ../ec2_instance/provision.yml
   vars:
-    name: "{{ env_name }}_cassandra"
-    group: [ "{{ ssh_sg_name }}", "{{ cassandra_sg_name }}" ]
+    name: "{{ cassandra_group_name }}"
+    group_name: "{{ cassandra_group_name }}"
+    security_groups: [ "{{ ssh_sg_name }}", "{{ cassandra_sg_name }}" ]
     vpc_subnet_id: "{{ vpc.subnets[1].id }}"
     instance_type: m3.large
     count: 3

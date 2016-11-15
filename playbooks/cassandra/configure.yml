@@ -10,14 +10,12 @@
 
 - name: workaround for group vars in templates
   hosts: all
-  tasks: []
-  tags: 
+  tags:
     - configure
+  tasks: []
 
-- hosts: "tag_Name_{{ env_name }}_cassandra"
+- hosts: "tag_Group_{{ cassandra_group_name }}"
   become: true
-  vars:
-    cassandra_cluster_name: "vimsical_{{ env_name }}"
   tags:
     - configure
   roles:
