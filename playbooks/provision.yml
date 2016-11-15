@@ -10,10 +10,10 @@
     - { role: ec2_keypair }
 
 - include: vpc/provision.yml
-- include: cassandra/provision.yml
+- include: security_groups/provision.yml
+#- include: cassandra/provision.yml
+- include: transactor/provision.yml
 
 # - include: redis/provision.yml
 # - include: alb/provision.yml
-# - include: transactor/provision.yml
 # - include: api/provision.yml
- 

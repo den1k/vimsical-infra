@@ -1,0 +1,16 @@
+---
+# Provision security groups
+#
+
+- name: provision security groups
+  hosts: localhost
+  connection: local
+  gather_facts: false
+  tasks:
+    - include: alb.yml
+    - include: api.yml
+    - include: cassandra.yml
+    - include: datomic.yml
+    - include: redis.yml
+    - include: ssh.yml
+
