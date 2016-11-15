@@ -16,7 +16,7 @@
         aws elbv2 create-load-balancer
         --name {{ alb_name }}
         --subnets {{ vpc.subnets }}
-        --security-groups {{ alb_sg }}
+        --security-groups {{ alb_sg_name }}
         --scheme internet-facing
         --tags Key=Name,Value={{ alb_name }},Key=Environment,Value={{ env_name }}
         

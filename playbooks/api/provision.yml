@@ -5,8 +5,8 @@
 - include: ec2_instance/provisioning.yml
   name: "{{env_name }}_api"
   groups: 
-    - "{{ ssh_sg }}"
-    - "{{ api_sg }}"
+    - "{{ ssh_sg_name }}"
+    - "{{ api_sg_name }}"
   instance_type: m3.large
   image: "{{ aws_ami_ssd }}"
   monitoring: true
