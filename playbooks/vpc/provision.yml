@@ -7,6 +7,10 @@
   gather_facts: false
 
   vars:
+    # Tags - used for identifying the VPC without an id, notably when creating
+    #
+    vpc_resource_tags: { "Name": "{{ env_name }}_vpc", "Environment": "{{ env_name }}" }
+
     # CIDR
     #
     vpc_cidr_block: 172.25.0.0/16
@@ -16,6 +20,7 @@
     public_az_2: "{{ aws_region }}b"
     private_cidr: 172.25.30.0/24
     private_az: "{{ aws_region }}c"
+
     # Subnets
     #
     vpc_subnets:
@@ -31,8 +36,7 @@
       - cidr: "{{ private_cidr }}"
         az: "{{ private_az }}"
         resource_tags: { "Name": "{{ private_az }}", "Environment": "{{ env_name }}" }
-    # Route table for private subnet
-    #
+
     # Route table for public subnet
     #
     public_subnet_rt:
@@ -49,32 +53,43 @@
         state: present
         region: "{{ aws_region }}"
         cidr_block: "{{ vpc_cidr_block }}"
-        resource_tags: { "Name": "{{ env_name }}_vpc", "Environment": "{{ env_name }}" }
+        resource_tags: "{{ vpc_resource_tags }}"
         subnets: "{{ vpc_subnets }}" 
         route_tables: "{{ public_subnet_rt }}"
         internet_gateway: yes
+        wait: yes
       register: vpc
       tags:
         - provision
-
-    - name: destroy subnets and route tables from VPC
-      ec2_vpc:
-        state: present
-        cidr_block: "{{ vpc_cidr_block }}"
-        resource_tags: { "Name": "{{ env_name }}_vpc", "Environment": "{{ env_name }}" }
-        region: "{{ aws_region }}"
-        subnets: []
-        internet_gateway: false
-        route_tables: []
-        wait: yes
-      tags:
         - destroy
+
+    - name: destroy route tables
+      ec2_vpc_route_table:
+        state: absent
+        region: "{{ aws_region }}"
+        vpc_id: "{{ vpc.vpc_id }}"
+        subnets: "{{ vpc_subnets }}"
+        routes: "{{ public_subnet_rt }}"
+      tags: destroy
+
+    - name: destroy subnets
+      ec2_vpc_subnet:
+        state: absent
+        vpc_id: "{{ vpc.vpc_id }}"
+        cidr: "{{ item.cidr }}"
+        region: "{{ aws_region }}"
+      with_items: "{{ vpc_subnets }}"
+      tags: destroy
+
+    # NOTE need to delete after subnets and before vpc
+    - include: ../security_groups/provision.yml
 
     - name: destroy vpc
       ec2_vpc:
         state: absent
-        region: "{{ aws_region }}"
+        vpc_id: "{{ vpc.vpc_id }}"
         cidr_block: "{{ vpc_cidr_block }}"
-        resource_tags: { "Name": "{{ env_name }}_vpc", "Environment": "{{ env_name }}" }
-      tags:
-        - destroy
+        region: "{{ aws_region }}"
+        resource_tags: "{{ vpc_resource_tags }}"
+        wait: yes
+      tags: destroy
