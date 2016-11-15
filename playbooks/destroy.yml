@@ -2,7 +2,9 @@
 # Destroy environment
 #
 
-- include: cassandra/provision.yml
-- include: vpc/provision.yml
+# Include the the provisioning playbooks, in reverse order
 
-# TODO extract sgs in playbook and destroy them first so we can destroy the vpc
+- include: transactor/provision.yml
+- include: cassandra/provision.yml
+- include: security_groups/provision.yml
+- include: vpc/provision.yml
