@@ -7,6 +7,7 @@
 # NOTE DO NOT install ansible with brew!
 
 deps-mac:
+	brew install awscli
 	sudo easy_install pip
 	sudo pip install ansible boto
 
@@ -21,25 +22,22 @@ deps: deps-mac
 	exit 1
 
 # ------------------------------------------------------------------------------
-# Args
+# Environment
 
-env:
+args:
 ifndef env_name
 	$(error "usage: make <target> env_name=foo")
 endif
 	@echo "Running with environment: $(env_name)"
 
-# ------------------------------------------------------------------------------
-# AWS
-# Automatically look up and export environment variables
 
+env-error = $(error "ERROR: AWS cli is not configured: run `aws configure` and retry.")
 AWS_ACCESS_KEY_ID := $(shell aws configure get aws_access_key_id)
 AWS_SECRET_ACCESS_KEY := $(shell aws configure get aws_secret_access_key)
 export AWS_ACCESS_KEY_ID
 export AWS_SECRET_ACCESS_KEY
 
-env-error = $(error "ERROR: AWS cli is not configured: run `aws configure` and retry.")
-
+env-vars:
 ifndef AWS_ACCESS_KEY_ID
 	$(call env-error)
 endif
@@ -47,19 +45,24 @@ ifndef AWS_SECRET_ACCESS_KEY
 	$(call env-error)
 endif
 
+env: args env-vars
+
 # ------------------------------------------------------------------------------
-# Ansible
+# Ansible targets
 
 flags = -v
-extra-vars = --extra-vars env_name=$(env_name) --extra-vars AWS_ACCESS_KEY_ID=$(AWS_ACCESS_KEY_ID) --extra-vars AWS_SECRET_ACCESS_KEY=$(AWS_SECRET_ACCESS_KEY)
+
+extra-vars = --extra-vars env_name=$(env_name) \
+--extra-vars AWS_ACCESS_KEY_ID=$(AWS_ACCESS_KEY_ID) \
+--extra-vars AWS_SECRET_ACCESS_KEY=$(AWS_SECRET_ACCESS_KEY)
 
 destroy: env
-	ansible-playbook playbooks/destroy.yml $(extra-args) $(extra-vars) --tags "destroy"
+	ansible-playbook playbooks/destroy.yml $(flags) $(extra-vars) --tags "destroy"
 
 provision: env
 	ansible-playbook playbooks/provision.yml $(flags) $(extra-vars) --tags "provision"
 
 configure: env
-	ansible-playbook playbooks/configure.yml $(extra-args) $(extra-vars) --tags "configure"
+	ansible-playbook playbooks/configure.yml $(flags) $(extra-vars) --tags "configure"
 
 all: .vault_pass env provision configure
