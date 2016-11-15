@@ -1,18 +1,85 @@
 ---
-# Provision a VPC and associated security groups
+# Provision VPC
 #
 
 - name: provision VPC
   hosts: localhost
   connection: local
   gather_facts: false
-  roles:
-    - { role: vpc }
-  tasks:
-    - include: security_groups/ssh.yml
-    - include: security_groups/alb.yml
-    - include: security_groups/api.yml
-    - include: security_groups/redis.yml
-    - include: security_groups/datomic.yml
-    - include: security_groups/cassandra.yml
 
+  vars:
+    # CIDR
+    #
+    vpc_cidr_block: 172.25.0.0/16
+    public_cidr_1: 172.25.10.0/24
+    public_az_1: "{{ aws_region }}a"
+    public_cidr_2: 172.25.20.0/24
+    public_az_2: "{{ aws_region }}b"
+    private_cidr: 172.25.30.0/24
+    private_az: "{{ aws_region }}c"
+    # Subnets
+    #
+    vpc_subnets:
+      # Public Subnet-1
+      - cidr: "{{ public_cidr_1 }}"
+        az: "{{ public_az_1 }}"
+        resource_tags: { "Name": "{{ public_az_1 }}", "Environment": "{{ env_name }}" }
+      # Public Subnet-2
+      - cidr: "{{ public_cidr_2 }}"
+        az: "{{ public_az_2 }}"
+        resource_tags: { "Name": "{{ public_az_2 }}", "Environment": "{{ env_name }}" }
+      # Private Subnet
+      - cidr: "{{ private_cidr }}"
+        az: "{{ private_az }}"
+        resource_tags: { "Name": "{{ private_az }}", "Environment": "{{ env_name }}" }
+    # Route table for private subnet
+    #
+    # Route table for public subnet
+    #
+    public_subnet_rt:
+      - subnets:
+          - "{{ public_cidr_1 }}"
+          - "{{ public_cidr_2 }}"
+        routes:
+          - dest: 0.0.0.0/0
+            gw: igw
+
+  tasks:
+    - name: create vpc
+      ec2_vpc:
+        state: present
+        region: "{{ aws_region }}"
+        cidr_block: "{{ vpc_cidr_block }}"
+        resource_tags: { "Name": "{{ env_name }}_vpc", "Environment": "{{ env_name }}" }
+        subnets: "{{ vpc_subnets }}" 
+        route_tables: "{{ public_subnet_rt }}"
+        internet_gateway: yes
+      register: vpc
+      tags:
+        - provision
+
+    # TODO this doesn't work because of dependencies, we should delete instances first
+
+    - name: destroy subnets and route tables from VPC
+      ec2_vpc:
+        state: present
+        cidr_block: "{{ vpc_cidr_block }}"
+        resource_tags: { "Name": "{{ env_name }}_vpc", "Environment": "{{ env_name }}" }
+        region: "{{ aws_region }}"
+        subnets: []
+        internet_gateway: false
+        route_tables: []
+        wait: yes
+      tags:
+        - destroy
+
+    - name: destroy vpc
+      ec2_vpc:
+        state: absent
+        region: "{{ aws_region }}"
+        cidr_block: "{{ vpc_cidr_block }}"
+        resource_tags: { "Name": "{{ env_name }}_vpc", "Environment": "{{ env_name }}" }
+        subnets: "{{ vpc_subnets }}" 
+        route_tables: "{{ public_subnet_rt }}"
+      tags:
+        - destroy
