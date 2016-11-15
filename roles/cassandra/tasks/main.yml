@@ -2,10 +2,6 @@
 # Install and configure cassandra
 #
 
-# ------------------------------------------------------------------------------
-# Configure
-#
-
 # NOTE: copy the conf *before* installing the package since apt will auto-start
 # on install. This would cause cassandra to create a 'Test Cluster' from the
 # default config and we'll error on restart
@@ -23,13 +19,6 @@
     src: cassandra-env.sh.j2
     dest: /etc/cassandra/cassandra-env.sh
 
-- name: nuclear
-  shell: >-
-    rm -rf /var/lib/cassandra/data/system/*
-
-# ------------------------------------------------------------------------------
-# Install
-#
 - name: add cassandra repository
   shell: >-
     echo "deb http://www.apache.org/dist/cassandra/debian 39x main" 
