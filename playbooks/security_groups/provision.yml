@@ -2,8 +2,7 @@
 # Provision security groups
 #
 
-- name: provision security groups
-  hosts: localhost
+- hosts: localhost
   connection: local
   gather_facts: false
   tasks:

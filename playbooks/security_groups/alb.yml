@@ -23,11 +23,13 @@
   tags: 
     - provision
 
-- name: destroy alb security group
-  ec2_group:
-    description: ALB security group
-    name: "{{ alb_sg }}"
-    region: "{{ aws_region }}"
-    state: absent
-  tags:
-    - destroy
+# - name: destroy alb security group
+#   ec2_group:
+#     description: ALB security group
+#     name: "{{ alb_sg }}"
+#     region: "{{ aws_region }}"
+#     state: absent
+#     rules: []
+#     rules_egress: []
+#   tags:
+#     - destroy

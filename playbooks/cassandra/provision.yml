@@ -2,24 +2,10 @@
 # Cassandra nodes
 #
 
-- name: provision cassandra cluster
-  hosts: localhost
-  connection: local
-  gather_facts: false
-  roles:
-    - role: ec2_instance
-      name: "{{ env_name }}_cassandra"
-      group: [ "{{ ssh_sg }}", "{{ cassandra_sg }}"]
-      vpc_subnet_id: "{{ vpc.subnets[1].id }}"
-      instance_type: m3.large
-      count: 3
-
-- name: install python2 on cassandra node
-  hosts: "tag_Name_{{ env_name }}_cassandra"
-  become: true
-  gather_facts: false
-  tasks:
-    - name: python2
-      raw: sudo apt-get install -y python-simplejson
-  tags: 
-    - provision
+- include: ../ec2_instance/provision.yml
+  vars:
+    name: "{{ env_name }}_cassandra"
+    group: [ "{{ ssh_sg }}", "{{ cassandra_sg }}" ]
+    vpc_subnet_id: "{{ vpc.subnets[1].id }}"
+    instance_type: m3.large
+    count: 3

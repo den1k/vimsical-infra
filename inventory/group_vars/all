@@ -1,6 +1,7 @@
 ---
 # AWS defaults
 #
+aws_account_id: vimsical
 aws_region: us-west-2
 aws_ami_ssd: ami-a9d276c9
 

@@ -1,5 +1,4 @@
-- name: Provision VPC and security groups
-  hosts: localhost
+- hosts: localhost
   connection: local
   gather_facts: false
   tasks:

@@ -2,7 +2,8 @@
 # Datomic transactor configuration
 #
 
-- hosts: tag_Name_transactor
+- hosts: "tag_Name_{{ env_name }}_transactor"
+  tags:
+    - configure
   roles:
-    - { role: dynamodb }
     - { role: transactor }

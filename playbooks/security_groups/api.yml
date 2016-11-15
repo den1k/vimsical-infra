@@ -24,9 +24,9 @@
         cidr_ip: 0.0.0.0/0
   tags: provision
 
-- name: destroy api security group
-  ec2_group:
-    description: API security group
-    name: "{{ api_sg }}"
-    state: absent
-  tags: destroy
+# - name: destroy api security group
+#   ec2_group:
+#     description: API security group
+#     name: "{{ api_sg }}"
+#     state: absent
+#   tags: destroy

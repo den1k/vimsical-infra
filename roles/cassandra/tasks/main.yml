@@ -9,6 +9,11 @@
 - name: get ec2 Facts
   action: ec2_facts
 
+- name: config dir
+  file:
+    path: /etc/cassandra
+    state: directory
+
 - name: config template
   template:
     src: cassandra.yaml.j2
@@ -20,21 +25,28 @@
     dest: /etc/cassandra/cassandra-env.sh
 
 - name: add cassandra repository
-  shell: >-
-    echo "deb http://www.apache.org/dist/cassandra/debian 39x main" 
-    | sudo tee -a /etc/apt/sources.list.d/cassandra.sources.list
+  apt_repository:
+    repo: "deb http://www.apache.org/dist/cassandra/debian 39x main"
+    filename: "cassandra.sources.list"
+  register: repo
 
 - name: add cassandra repository key
-  shell: >-
-    curl https://www.apache.org/dist/cassandra/KEYS | sudo apt-key add -
+  when: repo.changed
+  apt_key:
+    url: "https://www.apache.org/dist/cassandra/KEYS"
 
 - name: install package
   apt:
     pkg: "cassandra={{ cassandra_version }}"
     update_cache: true
 
-- name: restart cassandra
+- name: stop cassandra
   service:
     name: cassandra
-    state: restarted
+    state: stopped
+
+- name: start cassandra
+  service:
+    name: cassandra
+    state: started
 

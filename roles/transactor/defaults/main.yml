@@ -5,7 +5,6 @@ datomic_log_dir: /var/datomic/log
 datomic_config_dir: /var/datomic/config
 # DynamoDB settings
 datomic_transactor_properties_template: ddb-transactor.properties.j2
-datomic_transactor_ddb_table: store
 # Recommended settings for -Xmx4g production usage.
 datomic_transactor_ram: 4g
 datomic_transactor_memory_index_threshold: 32m
@@ -13,3 +12,9 @@ datomic_transactor_memory_index_max: 256m
 datomic_transactor_object_cache_max: 128m
 datomic_transactor_write_concurrency: 4
 datomic_transactor_read_concurrency: 8
+
+# TODO DRY this, duplicated from dynamodb role
+ddb_table: "vimsical_{{ env_name }}"
+ddb_s3_log_bucket: "vimsical_{{ env_name }}_datomic_logs"
+datomic_peer_role: "vimsical_{{ env_name }}_peer"
+datomic_transactor_role: "vimsical_{{ env_name }}_transactor"

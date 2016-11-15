@@ -3,6 +3,7 @@
 #
 
 - name: install zip
+  become: true
   apt: pkg=unzip
 
 - name: create download dir
@@ -10,25 +11,20 @@
     path: "{{ datomic_download_dir }}"
     state: directory
 
-- name: create datomic home dir
-  file:
-    path: "{{ datomic_home }}"
-    state: directory
-
 - name: download archive
+  become: true
   get_url:
     url_username: "{{ datomic_login }}"
     url_password: "{{ datomic_password }}"
     url: "{{ datomic_url }}"
     dest: "{{ datomic_download_dir }}/datomic.zip"
+    force: yes
 
 - name: unzip to datomic home dir
+  become: true
   unarchive:
     remote_src: true
     src: "{{ datomic_download_dir }}/datomic.zip"
-    dest: "{{ datomic_home }}"
+    dest: "{{ datomic_home_parent }}"
+    creates: "{{ datomic_home_name }}"
 
-- name: cleanup tmp files
-  file:
-    path: "{{ datomic_download_dir }}"
-    state: absent

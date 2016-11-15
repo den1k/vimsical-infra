@@ -5,8 +5,7 @@
 # TODO register ARN from alb creation:
 # http://stackoverflow.com/questions/39946284/how-do-i-register-a-variable-in-ansible-pulled-from-json-output
 
-- name: Provision ALB
-  hosts: localhost
+- hosts: localhost
   connection: local
   gather_facts: false
   vars:

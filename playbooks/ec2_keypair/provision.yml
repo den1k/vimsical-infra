@@ -1,0 +1,50 @@
+---
+# Provision ec2 keypair
+#
+
+- hosts: localhost
+  connection: local
+  gather_facts: false
+  tags:
+    - provision
+  tasks:
+    - name: create keypair
+      ec2_key:
+        name: "{{ aws_key_name }}"
+        region: "{{ aws_region }}"
+      register: ec2_key
+
+    - name: ssh folder
+      file:
+        path: ~/.ssh
+        state: directory
+      when: ec2_key.changed
+
+    - name: save private key
+      copy:
+        content: "{{ ec2_key.key.private_key }}"
+        dest: "{{ aws_private_key }}"
+        mode: 0600
+      when: ec2_key.changed
+
+
+# Destroy ec2 keypair
+#
+
+- hosts: localhost
+  connection: local
+  gather_facts: false
+  tags:
+    - destroy
+  tasks:
+    - name: destroy keypair
+      ec2_key:
+        name: "{{ aws_key_name }}"
+        region: "{{ aws_region }}"
+        state: absent
+
+    - name: delete private key
+      file:
+        path: "{{ aws_private_key }}"
+        state: absent
+

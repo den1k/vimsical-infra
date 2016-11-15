@@ -1,14 +1,13 @@
 ---
 # Configure Application load balancer
 
-- name: configure ALB
-  hosts: localhost
+- hosts: localhost
   connection: local
   gather_facts: false
   tags: configure
   vars:
     alb_target_instance_ids:
-      - 
+
   # alb_target_group_arn arn:aws:elasticloadbalancing:us-east-1:your-target-group
   tasks:
     - name: Register target instance with alb
@@ -16,4 +15,4 @@
         aws elbv2 register-targets
         --target-group-arn {{ alb_target_group_arn }} 
         --targets Id={{ item }}
-      with_items: {{ alb_target_instance_ids }}
+      with_items: "{{ alb_target_instance_ids }}"

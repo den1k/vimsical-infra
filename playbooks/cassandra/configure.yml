@@ -1,11 +1,14 @@
 ---
-# Configure Cassandra nodes
+# Configure cassandra cluster
 #
+
+# https://d0.awsstatic.com/whitepapers/AWS_Cassandra_Whitepaper.pdf
+# https://www.datadoghq.com/blog/how-to-monitor-cassandra-performance-metrics/
 
 # Workaround
 # https://github.com/ansible/ansible/issues/9260
 
-- name: workaround
+- name: workaround for group vars in templates
   hosts: all
   tasks: []
   tags: 
@@ -15,5 +18,7 @@
   become: true
   vars:
     cassandra_cluster_name: "vimsical_{{ env_name }}"
+  tags:
+    - configure
   roles:
-    - { role: cassandra, tags: ["configure"] }
+    - { role: cassandra }

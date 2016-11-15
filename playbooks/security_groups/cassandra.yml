@@ -36,9 +36,9 @@
   tags: 
     - provision
 
-- name: destroy cassandra security group
-  ec2_group:
-    description: Cassandra cluster node security group
-    name: "{{ cassandra_sg }}"
-  tags: 
-    - destroy
+# - name: destroy cassandra security group
+#   ec2_group:
+#     description: Cassandra cluster node security group
+#     name: "{{ cassandra_sg }}"
+#   tags: 
+#     - destroy

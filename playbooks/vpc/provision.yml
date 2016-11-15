@@ -2,8 +2,7 @@
 # Provision VPC
 #
 
-- name: provision VPC
-  hosts: localhost
+- hosts: localhost
   connection: local
   gather_facts: false
 
@@ -58,8 +57,6 @@
       tags:
         - provision
 
-    # TODO this doesn't work because of dependencies, we should delete instances first
-
     - name: destroy subnets and route tables from VPC
       ec2_vpc:
         state: present
@@ -79,7 +76,5 @@
         region: "{{ aws_region }}"
         cidr_block: "{{ vpc_cidr_block }}"
         resource_tags: { "Name": "{{ env_name }}_vpc", "Environment": "{{ env_name }}" }
-        subnets: "{{ vpc_subnets }}" 
-        route_tables: "{{ public_subnet_rt }}"
       tags:
         - destroy

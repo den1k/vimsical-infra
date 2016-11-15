@@ -18,8 +18,8 @@
         cidr_ip: 0.0.0.0/0
   tags: provision
 
-- name: destroy redis security group
-  ec2_group:
-    description: Redis security group
-    name: "{{ redis_sg }}"
-  tags: destroy
+# - name: destroy redis security group
+#   ec2_group:
+#     description: Redis security group
+#     name: "{{ redis_sg }}"
+#   tags: destroy

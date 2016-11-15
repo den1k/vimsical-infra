@@ -9,7 +9,8 @@
   roles: 
     - { role: ec2_keypair }
 
-- include: cassandra/configure.yml
+# - include: cassandra/configure.yml
+- include: transactor/configure.yml
 
 # - include: api/configure.yml
-# - include: transactor/configure.yml
+

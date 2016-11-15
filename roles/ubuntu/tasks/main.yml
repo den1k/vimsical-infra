@@ -6,7 +6,8 @@
   raw: sudo apt-get -y install python-minimal aptitude
 
 - name: apt update and ugrade
-  apt: update_cache=true upgrade=true
+  become: true
+  apt: update_cache=true upgrade=safe
 
 - name: install common packages
   apt: 

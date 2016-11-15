@@ -1,45 +1,49 @@
 --- 
 # Configure datomic transactor
 #
-
-- name: create datomic user
-  user: >-
-    name=datomic
-    comment='Datomic'
-
 - name: create data dir
-  file: >-
-    path={{ datomic_data_dir }}
-    state=directory
+  become: true
+  file:
+    path: "{{ datomic_data_dir }}"
+    state: directory
 
 - name: create log dir
-  file: >-
-    path={{ datomic_log_dir }}
-    state=directory
+  become: true
+  file:
+    path: "{{ datomic_log_dir }}"
+    state: directory
 
 - name: create config dir
-  file: >-
-    path={{ datomic_config_dir }}
-    state=directory
+  become: true
+  file:
+    path: "{{ datomic_config_dir }}"
+    state: directory
 
 - name: copy config
-  template: >-
-    src={{ datomic_transactor_properties_template }}
-    dest={{ datomic_config_dir }}/transactor.raw.properties
+  become: true
+  template:
+    src: "{{ datomic_transactor_properties_template }}"
+    dest: "{{ datomic_config_dir }}/transactor.properties"
 
-- name: auto-generate transactor aws config (requires AWS credentials)
-  command: >-
-    {{ datomic_home }}/bin/datomic ensure-transactor
-    {{ datomic_config_dir }}/transactor.raw.properties
-    {{ datomic_config_dir }}/transactor.properties
+# - name: auto-generate transactor aws config (requires AWS credentials)
+#   command: >-
+#     {{ datomic_home }}/bin/datomic ensure-transactor
+#     {{ datomic_config_dir }}/transactor.raw.properties
+#     {{ datomic_config_dir }}/transactor.properties
+
+- name: create systemd unit folder
+  become: true
+  file: path=/etc/systemd/system state=directory
 
 - name: copy systemd unit file
-  template: >-
-    src=datomic-transactor.service.j2
-    dest=/usr/lib/systemd/system/datomic-transactor.service
+  become: true
+  template:
+    src: datomic-transactor.service.j2
+    dest: /etc/systemd/system/datomic-transactor.service
 
 - name: start service
-  systemd: >-
-    name=datomic-transactor
-    enabled=true
-    state=started
+  become: true
+  systemd:
+    name: datomic-transactor
+    enabled: true
+    state: started

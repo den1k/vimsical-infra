@@ -4,7 +4,10 @@ Description = Starts the Datomic transactor (Pro edition)
 [Service]
 User = datomic
 Type = simple
-ExecStart = {{ datomic_home }}/bin/transactor -Xms {{ datomic_transactor_ram }} -Xmx {{ datomic_transactor_ram }} {{ datomic_home }}/config/transactor.properties
+# TODO Figure if we can use IAM roles instead?
+Environment = AWS_ACCESS_KEY_ID={{ AWS_ACCESS_KEY_ID }}
+Environment = AWS_SECRET_ACCESS_KEY={{ AWS_SECRET_ACCESS_KEY }}
+ExecStart = {{ datomic_home }}/bin/transactor -Xms{{ datomic_transactor_ram }} -Xmx{{ datomic_transactor_ram }} {{ datomic_config_dir }}/transactor.properties
 Restart = always
 
 [Install]

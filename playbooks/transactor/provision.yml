@@ -2,17 +2,15 @@
 # Datomic transactor provisioning
 #
 
-- name: Provision transactor
-  hosts: localhost
+- hosts: localhost
   connection: local
-  gather_facts: false
-  vars:
-    name: transactor
-    groups: 
-      - "{{ ssh_sg }}"
-      - "{{ transactor_sg }}"
-    instance_type: m3.large
-    image: "{{ aws_ami_ssd }}"
   roles:
-    - { role: ec2_instance }
-  
+    - { role: dynamodb }
+
+- include: ../ec2_instance/provision.yml
+  vars:
+    name: "{{ env_name }}_transactor"
+    group: [ "{{ ssh_sg }}", "{{ transactor_sg }}" ]
+    vpc_subnet_id: "{{ vpc.subnets[1].id }}"
+    instance_type: m3.large
+    count: 1

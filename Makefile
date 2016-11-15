@@ -51,16 +51,15 @@ endif
 # Ansible
 
 flags = -v
-extra-vars = --extra-vars env_name=$(env_name)
-inventory = -i ./inventory/ec2.py
+extra-vars = --extra-vars env_name=$(env_name) --extra-vars AWS_ACCESS_KEY_ID=$(AWS_ACCESS_KEY_ID) --extra-vars AWS_SECRET_ACCESS_KEY=$(AWS_SECRET_ACCESS_KEY)
 
 destroy: env
-	ansible-playbook playbooks/destroy.yml $(extra-args) $(inventory) $(extra-vars) --tags "destroy"
+	ansible-playbook playbooks/destroy.yml $(extra-args) $(extra-vars) --tags "destroy"
 
 provision: env
-	ansible-playbook playbooks/provision.yml $(flags) $(inventory) $(extra-vars) --tags "provision"
+	ansible-playbook playbooks/provision.yml $(flags) $(extra-vars) --tags "provision"
 
 configure: env
-	ansible-playbook playbooks/configure.yml $(extra-args) $(inventory) $(extra-vars) --tags "configure"
+	ansible-playbook playbooks/configure.yml $(extra-args) $(extra-vars) --tags "configure"
 
 all: .vault_pass env provision configure

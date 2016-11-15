@@ -14,12 +14,12 @@
   tags: 
     - provision
 
-- name: destroy peer security group
-  ec2_group:
-    description: Datomic peer security group
-    name: "{{ peer_sg }}"
-  tags:
-    - destroy
+# - name: destroy peer security group
+#   ec2_group:
+#     description: Datomic peer security group
+#     name: "{{ peer_sg }}"
+#   tags:
+#     - destroy
 
 # Transactor sg
 #
@@ -48,10 +48,10 @@
   tags: 
     - provision
 
-- name: destroy transactor security group
-  ec2_group:
-    description: Datomic transactor security group
-    name: "{{ transactor_sg }}"
-  tags:
-    - destroy
+# - name: destroy transactor security group
+#   ec2_group:
+#     description: Datomic transactor security group
+#     name: "{{ transactor_sg }}"
+#   tags:
+#     - destroy
 

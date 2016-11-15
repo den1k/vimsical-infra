@@ -4,7 +4,12 @@
 
 # Include the the provisioning playbooks, in reverse order
 
+# - include: alb/provision.yml
+# - include: api/provision.yml
+# - include: redis/provision.yml
 - include: transactor/provision.yml
 - include: cassandra/provision.yml
 - include: security_groups/provision.yml
 - include: vpc/provision.yml
+- include: ec2_keypair/provision.yml
+
