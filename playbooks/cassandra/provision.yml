@@ -10,3 +10,15 @@
     vpc_subnet_id: "{{ vpc.subnets[1].id }}"
     instance_type: m3.large
     count: 3
+
+- hosts: localhost
+  connection: local
+  vars:
+    cassandra_group: "{{ groups['tag_Group' + cassandra_group_name] }}"
+  tasks:
+    - name: register cassandra_host fact
+      set_fact:
+        cassandra_host: "{{ hostvars[cassandra_group[0]].ansible_default_ipv4.address }}"
+    - name: register cassandra_seeds fact
+      set_fact:
+        cassandra_seeds: "{{ groups[cassandra_group] | map('extract', hostvars, ['ansible_default_ipv4', 'address']) | join(',') }}"

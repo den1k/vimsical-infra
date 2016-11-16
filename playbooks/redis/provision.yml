@@ -39,6 +39,11 @@
         security_group_ids: "{{ redis_sg.group_id }}"
         zone: "{{ cluster_az }}"
         wait: true
+      register: redis
+
+    - name: set redis host fact
+      set_fact:
+        redis_host: "{{ redis.elasticache.data.CacheNodes[0].Endpoint.Address }}"
 
 - hosts: localhost
   connection: local

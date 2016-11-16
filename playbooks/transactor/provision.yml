@@ -15,3 +15,12 @@
     vpc_subnet_id: "{{ vpc.subnets[1].id }}"
     instance_type: m3.large
     count: 1
+
+- hosts: localhost
+  connection: local
+  vars:
+    transactor_group: "{{ groups['tag_Group' + transactor_group_name] }}"
+  tasks:
+    - name: register transactor_host fact
+      set_fact:
+        transactor_host: "{{ hostvars[transactor_group[0]].ansible_eth0.ipv4.address }}"
