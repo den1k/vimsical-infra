@@ -2,9 +2,11 @@
 # Download and install datomic pro
 #
 
-# - name: create datomic user
-#   become: true
-#   user: name=datomic state=present
+- name: create datomic user
+  become: true
+  user:
+    name: "{{ datomic_user }}"
+    state: present
 
 - include: download.yml
 

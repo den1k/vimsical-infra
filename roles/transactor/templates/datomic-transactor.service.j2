@@ -2,7 +2,7 @@
 Description = Starts the Datomic transactor (Pro edition)
 
 [Service]
-User = datomic
+User = {{ datomic_user}}
 Type = simple
 # TODO Figure if we can use IAM roles instead?
 Environment = AWS_ACCESS_KEY_ID={{ AWS_ACCESS_KEY_ID }}

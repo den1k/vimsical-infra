@@ -27,4 +27,4 @@
     src: "{{ datomic_download_dir }}/datomic.zip"
     dest: "{{ datomic_home_parent }}"
     creates: "{{ datomic_home_name }}"
-
+    owner: "{{ datomic_user }}"
