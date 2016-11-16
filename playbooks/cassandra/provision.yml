@@ -2,7 +2,7 @@
 # Cassandra nodes
 #
 
-- name: Provision cassandra cluster
+- name: provision cassandra instance(s)
   include: ../ec2_instance/provision.yml
   vars:
     name: "{{ cassandra_group_name }}"
@@ -16,7 +16,7 @@
   hosts: localhost
   connection: local
   vars:
-    cassandra_group: "{{ groups['tag_Group' + cassandra_group_name] }}"
+    cassandra_group: "{{ groups['tag_Group_' + cassandra_group_name] }}"
   tasks:
     - name: register cassandra_host fact
       set_fact:
