@@ -1,5 +1,5 @@
 ---
-ddb_table: "vimsical_{{ env_name }}"
-ddb_s3_log_bucket: "vimsical_{{ env_name }}_datomic_logs"
-datomic_peer_role: "vimsical_{{ env_name }}_peer"
-datomic_transactor_role: "vimsical_{{ env_name }}_transactor"
+datomic_ddb_table_name: "vimsical_{{ env_name }}"
+datomic_ddb_s3_log_bucket_name: "vimsical_{{ env_name }}_datomic_logs"
+datomic_iam_peer_role: "vimsical_{{ env_name }}_peer"
+datomic_iam_transactor_role: "vimsical_{{ env_name }}_transactor"

@@ -25,7 +25,7 @@
 - name: copy config
   become: true
   template:
-    src: "{{ datomic_transactor_properties_template }}"
+    src: "{{ datomic_properties_template }}"
     dest: "{{ datomic_config_dir }}/transactor.properties"
     owner: "{{ datomic_user }}"
 

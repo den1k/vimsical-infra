@@ -9,7 +9,7 @@
         "dynamodb:Scan",
         "dynamodb:Query"
       ],
-      "Resource": "arn:aws:dynamodb:*:{{ aws_account_id }}:table/{{ ddb_table }}"
+      "Resource": "arn:aws:dynamodb:*:{{ aws_account_id }}:table/{{ datomic_ddb_table_name }}"
     }
   ]
 }

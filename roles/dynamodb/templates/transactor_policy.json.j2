@@ -7,7 +7,7 @@
       "Action": [
         "dynamodb:*"
       ],
-      "Resource": "arn:aws:dynamodb:*:{{ aws_account_id }}:table/{{ ddb_table }}"
+      "Resource": "arn:aws:dynamodb:*:{{ aws_account_id }}:table/{{ datomic_ddb_table_name }}"
     },
     {
       "Sid": "S3 bucket access (log rotation)",
@@ -16,8 +16,8 @@
         "s3:PutObject"
       ],
       "Resource": [
-        "arn:aws:s3:::{{ ddb_s3_log_bucket }}",
-        "arn:aws:s3:::{{ ddb_s3_log_bucket }}/*"
+        "arn:aws:s3:::{{ datomic_ddb_s3_log_bucket_name }}",
+        "arn:aws:s3:::{{ datomic_ddb_s3_log_bucket_name }}/*"
       ]
     },
     {
