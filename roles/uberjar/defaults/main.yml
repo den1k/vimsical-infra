@@ -1,2 +1,7 @@
 ---
-clone_dir: /tmp/clone
+git_repo_dir: /tmp/clone
+uberjar_command: lein uberjar
+service_type: simple
+service_user: root
+service_target: multi-user.target
+service_restart: always

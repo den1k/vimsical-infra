@@ -2,26 +2,48 @@
 # Pull the app repo and cut a jar
 #
 
-- name: create repo directory
-  file: >-
-    path={{ clone_dir }}
-    state=directory
-
 - name: pull repo
-  git: >-
-    repo={{ uberjar_repo }}
-    dest={{ clone_dir }}
-    update=true
-    accept_hostkey=true
-    force=true
-    key_file=~/.ssh/id_rsa
+  file: path={{ git_repo_dir }} state=directory
+  git:
+    repo: "{{ git_repo }}"
+    dest: "{{ git_repo_dir }}"
+    update: true
+    accept_hostkey: true
+    force: true
 
 - name: create uberjar
-  command: lein uberjar
-  args: >-
-    chdir={{ clone_dir }}
+  command: "{{ uberjar_command }}"
+  args:
+    chdir: "{{ git_repo_dir }}"
+
+- name: move jar to jar_dir
+  file: path={{ jar_dir }} state=directory
+  copy:
+    remote_src: true
+    src: "{{ git_repo_dir }}/target/{{ jar_name }}"
+    dest: "{{ jar_dir }}"
+    owner: "{{ jar_user }}"
 
 - name: delete repo
-  file: >-
-    path={{ clone_dir }}
-    state=absent
+  file: path={{ git_repo_dir }} state=absent
+
+- name: create systemd unit folder
+  become: true
+  file: path=/etc/systemd/system state=directory
+
+- name: copy systemd unit file
+  become: true
+  template:
+    src: unit.service.j2
+    dest: "/etc/systemd/system/{{ service_name }}.service"
+
+- name: reload systemd
+  become: true
+  command: systemctl daemon-reload
+
+- name: start service
+  become: true
+  systemd:
+    enabled: true
+    name: "{{ service_name }}"
+    state: started
