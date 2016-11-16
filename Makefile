@@ -1,4 +1,4 @@
-.PHONY: .vault_passs env deps inventory
+.PHONY: .vault_passs env inventory
 
 # ------------------------------------------------------------------------------
 # System deps
@@ -6,12 +6,14 @@
 
 # NOTE DO NOT install ansible with brew!
 
+deps-linux:
+	sudo apt-get install python python-pip
+	sudo pip install ansible boto
+
 deps-mac:
 	brew install awscli
 	sudo easy_install pip
 	sudo pip install ansible boto
-
-deps: deps-mac
 
 # ------------------------------------------------------------------------------
 # Vault
@@ -45,6 +47,7 @@ ifndef AWS_SECRET_ACCESS_KEY
 	$(call env-error)
 endif
 
+
 env: args env-vars
 
 # ------------------------------------------------------------------------------
@@ -56,13 +59,15 @@ env: args env-vars
 root_dir:=$(shell dirname $(realpath $(lastword $(MAKEFILE_LIST))))
 dynamic_inventory_file := $(root_dir)/inventory/ec2.py
 
-flags := -v -i $(dynamic_inventory_file)
+flags := -v
+#-i $(dynamic_inventory_file)
 
 extra-vars := \
 --extra-vars dynamic_inventory_file=$(dynamic_inventory_file) \
 --extra-vars env_name=$(env_name) \
 --extra-vars AWS_ACCESS_KEY_ID=$(AWS_ACCESS_KEY_ID) \
---extra-vars AWS_SECRET_ACCESS_KEY=$(AWS_SECRET_ACCESS_KEY)
+--extra-vars AWS_SECRET_ACCESS_KEY=$(AWS_SECRET_ACCESS_KEY) \
+-e @env.yml \
 
 # Targets
 
@@ -73,6 +78,6 @@ provision: env
 	ansible-playbook playbooks/provision.yml $(flags) $(extra-vars) --tags "provision"
 
 configure: env
-	ansible-playbook playbooks/configure.yml $(flags) $(extra-vars) --tags "configure"
+	ansible-playbook $(flags) $(extra-vars) playbooks/configure.yml --tags "configure"
 
 all: .vault_pass env provision configure

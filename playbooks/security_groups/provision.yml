@@ -35,13 +35,13 @@
     rules:
       # HTTP
       - proto: tcp
-        from_port: 8080
-        to_port: 8080
+        from_port: "{{ api_http_port }}"
+        to_port: "{{ api_http_port }}"
         group_name: "{{ alb_sg_name }}"
       # Websocket
       - proto: tcp
-        from_port: 8081
-        to_port: 8081
+        from_port: "{{ api_websocket_port }}"
+        to_port: "{{ api_websocket_port }}"
         group_name: "{{ alb_sg_name }}"
     rules_egress:
       - proto: all

@@ -17,7 +17,7 @@
         --security-groups {{ alb_sg_name }}
         --scheme internet-facing
         --tags Key=Group,Value={{ alb_group_name }},Key=Environment,Value={{ env_name }}
-        
+
     - name: create http target group
       command: >-
         aws elbv2 create-target-group
@@ -41,4 +41,3 @@
           --protocol https
           --port 443
           --certificates {{ cert }}
-

@@ -49,4 +49,3 @@
   service:
     name: cassandra
     state: started
-

@@ -3,5 +3,37 @@
 #
 
 - hosts: "tag_Group_{{ api_group_name }}"
-  vars: git_repo: "git@github.com:vimsical/vimsical.git"
-  roles: - { role: uberjar }
+  tags:
+    - configure
+  vars:
+    vimsical_user: vimsical
+  pre_tasks:
+    - name: create user
+      become: true
+      user:
+        name: "{{ vimsical_user }}"
+        state: present
+  roles:
+    - role: uberjar
+      vars:
+        git_repo: "git@github.com:vimsical/vimsical.git"
+        service_name: "vimsical-api"
+        service_description: "Vimsical API"
+        jvm_options: "-Xmx4 -Xms4g"
+        jar_dir: "/home/{{ vimsical_user}}"
+        jar_name: "vimsical.jar"
+        service_user: "{{ vimsical_user }}"
+        service_type: simple
+        service_env:
+          WEBSOCKET_PORT: "{{ api_websocket_port }}"
+          HTTP_PORT: "{{ api_http_port }}"
+          DATOMIC_PROTOCOL: "{{ datomic_protocol}}"
+          DATOMIC_HOST: "{{ transactor_host }}"
+          DATOMIC_PORT: "{{ transactor_port }}"
+          DATOMIC_NAME: "{{ transactor_db_name }}"
+          CASSANDRA_HOST: "{{ cassandra_seeds }}"
+          CASSANDRA_PORT: "{{ cassandra_port }}"
+          CASSANDRA_KEYSPACE: "{{ cassandra_keyspace }}"
+          CASSANDRA_REPLICATION_FACTOR: "{{ cassandra_replication_factor }}"
+          REDIS_HOST: "{{ redis_host }}"
+          REDIS_PORT: "{{ redis_port }}"

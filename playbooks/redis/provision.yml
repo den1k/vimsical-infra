@@ -5,14 +5,13 @@
 # NOTE elasticache has specific restrictions on cluster names that prevent us
 # from using the group_name. Should we switch to using hyphens?
 
-- hosts: localhost
+- name: provision redis elasticache cluster
+  hosts: localhost
   connection: local
   gather_facts: false
   tags: provision
   vars:
     cluster_name: "{{ env_name }}-redis"
-    cluster_node_type: cache.m1.small
-    cluster_num_nodes: 1
     cluster_az: "{{ aws_region }}a" # TODO duplicated from VPC provisioning
     cluster_subnet_name: "{{ cluster_az }}-subnet-group"
   tasks:
@@ -31,8 +30,8 @@
         engine: redis
         name: "{{ cluster_name }}"
         region: "{{ aws_region }}"
-        node_type: "{{ cluster_node_type }}"
-        num_nodes: "{{ cluster_num_nodes }}"
+        node_type: "{{ redis_instance_type }}"
+        num_nodes: "{{ redis_instance_count }}"
         cache_port: "{{ redis_port }}"
         cache_security_groups: [] # Must be empty with vpc
         cache_subnet_group: "{{ cluster_subnet_name }}"
@@ -41,11 +40,12 @@
         wait: true
       register: redis
 
-    - name: set redis host fact
+    - name: set redis_host fact
       set_fact:
         redis_host: "{{ redis.elasticache.data.CacheNodes[0].Endpoint.Address }}"
 
-- hosts: localhost
+- name: destroy redis elasticache cluster
+  hosts: localhost
   connection: local
   gather_facts: false
   tags: destroy

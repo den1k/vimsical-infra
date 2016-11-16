@@ -18,15 +18,13 @@
       file:
         path: ~/.ssh
         state: directory
-      when: ec2_key.changed
 
     - name: save private key
       copy:
         content: "{{ ec2_key.key.private_key }}"
-        dest: "{{ aws_private_key }}"
+        dest: "{{ aws_local_private_key }}"
         mode: 0600
-      when: ec2_key.changed
-
+      when: ec2_key.key.private_key is defined
 
 # Destroy ec2 keypair
 #
@@ -45,6 +43,5 @@
 
     - name: delete private key
       file:
-        path: "{{ aws_private_key }}"
+        path: "{{ aws_local_private_key }}"
         state: absent
-

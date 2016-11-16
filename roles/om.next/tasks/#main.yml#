@@ -14,5 +14,5 @@
 
 - name: install
   command: lein install
-  args: 
+  args:
     chdir: {{ om_dir }}

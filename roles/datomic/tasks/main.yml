@@ -1,4 +1,4 @@
---- 
+---
 # Download and install datomic pro
 #
 
@@ -9,4 +9,3 @@
     state: present
 
 - include: download.yml
-

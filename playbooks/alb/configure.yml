@@ -13,6 +13,6 @@
     - name: Register target instance with alb
       command: >-
         aws elbv2 register-targets
-        --target-group-arn {{ alb_target_group_arn }} 
+        --target-group-arn {{ alb_target_group_arn }}
         --targets Id={{ item }}
       with_items: "{{ alb_target_instance_ids }}"

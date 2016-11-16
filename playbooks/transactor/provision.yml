@@ -2,21 +2,24 @@
 # Datomic transactor provisioning
 #
 
-- hosts: localhost
+- name: provision dynamodb
+  hosts: localhost
   connection: local
   roles:
     - { role: dynamodb }
 
-- include: ../ec2_instance/provision.yml
+- name: provision transactor
+  include: ../ec2_instance/provision.yml
   vars:
     name: "{{ transactor_group_name }}"
     group_name: "{{ transactor_group_name }}"
     security_groups: [ "{{ ssh_sg_name }}", "{{ transactor_sg_name }}" ]
     vpc_subnet_id: "{{ vpc.subnets[1].id }}"
-    instance_type: m3.large
-    count: 1
+    instance_type: "{{ transactor_instance_type }}"
+    count: "{{ transactor_instance_count }}"
 
-- hosts: localhost
+- name: register transactor facts
+  hosts: localhost
   connection: local
   vars:
     transactor_group: "{{ groups['tag_Group' + transactor_group_name] }}"

@@ -2,7 +2,8 @@
 # Cassandra nodes
 #
 
-- include: ../ec2_instance/provision.yml
+- name: Provision cassandra cluster
+  include: ../ec2_instance/provision.yml
   vars:
     name: "{{ cassandra_group_name }}"
     group_name: "{{ cassandra_group_name }}"
@@ -11,7 +12,8 @@
     instance_type: m3.large
     count: 3
 
-- hosts: localhost
+- name: register cassandra facts
+  hosts: localhost
   connection: local
   vars:
     cassandra_group: "{{ groups['tag_Group' + cassandra_group_name] }}"

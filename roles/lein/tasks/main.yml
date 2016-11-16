@@ -2,14 +2,16 @@
 # Install leiningen
 #
 
+- name: create lein dir
+  become: true
+  file: path={{ lein_dir }}
+
 - name: download latest leiningen release
+  become: true
   get_url:
     url: https://raw.github.com/technomancy/leiningen/stable/bin/lein
-    dest: /usr/local/bin/lein
-  
-- name: make lein executable
-  file: path=/usr/local/bin/lein mode=755
-      
+    dest: "{{ lein_dir }}"
+    mode: 0755
+
 - name: lein bootstrap
   command: lein version
-  

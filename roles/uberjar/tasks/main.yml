@@ -2,8 +2,10 @@
 # Pull the app repo and cut a jar
 #
 
-- name: pull repo
+- name: create git_repo_dir
   file: path={{ git_repo_dir }} state=directory
+
+- name: pull repo
   git:
     repo: "{{ git_repo }}"
     dest: "{{ git_repo_dir }}"
@@ -12,17 +14,21 @@
     force: true
 
 - name: create uberjar
-  command: "{{ uberjar_command }}"
+  shell: "{{ uberjar_command }}"
+  environment: "{{ uberjar_environment }}"
   args:
     chdir: "{{ git_repo_dir }}"
 
+- name: create jar_dir
+  file: path={{ jar_dir }} state=directory owner={{ service_user }}
+
 - name: move jar to jar_dir
-  file: path={{ jar_dir }} state=directory
+  become: true
   copy:
     remote_src: true
     src: "{{ git_repo_dir }}/target/{{ jar_name }}"
-    dest: "{{ jar_dir }}"
-    owner: "{{ jar_user }}"
+    dest: "{{ jar_dir }}/{{ jar_name }}"
+    owner: "{{ service_user }}"
 
 - name: delete repo
   file: path={{ git_repo_dir }} state=absent
