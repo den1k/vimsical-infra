@@ -5,7 +5,7 @@ Description={{ service_description }}
 {% for name, value in service_env.iteritems() %}
 Environment="{{ name }}={{ value }}"
 {% endfor %}
-ExecStart=/bin/sh -c '/usr/bin/java {{ jvm_options }} -jar {{ jar_file }}'
+ExecStart=/bin/sh -c '/usr/bin/java {{ jvm_options }} -jar {{ jar_dir }}/{{ jar_name }}'
 Type={{ service_type }}
 User={{ service_user }}
 Restart = {{ service_restart }}

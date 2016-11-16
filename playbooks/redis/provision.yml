@@ -11,7 +11,6 @@
   gather_facts: false
   tags: provision
   vars:
-    cluster_name: "{{ env_name }}-redis"
     cluster_az: "{{ aws_region }}a" # TODO duplicated from VPC provisioning
     cluster_subnet_name: "{{ cluster_az }}-subnet-group"
   tasks:
@@ -28,7 +27,7 @@
       elasticache:
         state: present
         engine: redis
-        name: "{{ cluster_name }}"
+        name: "{{ redis_cluster_name }}"
         region: "{{ aws_region }}"
         node_type: "{{ redis_instance_type }}"
         num_nodes: "{{ redis_instance_count }}"
@@ -40,24 +39,19 @@
         wait: true
       register: redis
 
-    - name: set redis_host fact
-      set_fact:
-        redis_host: "{{ redis.elasticache.data.CacheNodes[0].Endpoint.Address }}"
-
 - name: destroy redis elasticache cluster
   hosts: localhost
   connection: local
   gather_facts: false
   tags: destroy
   vars:
-    cluster_name: "{{ env_name }}-redis"
     cluster_az: "{{ aws_region }}a" # TODO duplicated from VPC provisioning
     cluster_subnet_name: "{{ cluster_az }}-subnet-group"
   tasks:
     - name: destroy cluster
       elasticache:
         state: absent
-        name: "{{ cluster_name }}"
+        name: "{{ redis_cluster_name }}"
         region: "{{ aws_region }}"
         zone: "{{ cluster_az }}"
         wait: true

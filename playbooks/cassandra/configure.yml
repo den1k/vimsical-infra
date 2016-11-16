@@ -5,15 +5,6 @@
 # https://d0.awsstatic.com/whitepapers/AWS_Cassandra_Whitepaper.pdf
 # https://www.datadoghq.com/blog/how-to-monitor-cassandra-performance-metrics/
 
-# Workaround
-# https://github.com/ansible/ansible/issues/9260
-
-- name: workaround for group vars in templates
-  hosts: all
-  tags:
-    - configure
-  tasks: []
-
 - hosts: "tag_Group_{{ cassandra_group_name }}"
   become: true
   tags:

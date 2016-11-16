@@ -6,14 +6,14 @@
 
 # NOTE DO NOT install ansible with brew!
 
-deps-linux:
+install-linux:
 	sudo apt-get install python python-pip
-	sudo pip install ansible boto
+	sudo pip install ansible==2.2 boto
 
-deps-mac:
+install-mac:
 	brew install awscli
 	sudo easy_install pip
-	sudo pip install ansible boto
+	sudo pip install ansible==2.2 boto
 
 # ------------------------------------------------------------------------------
 # Vault
@@ -26,29 +26,11 @@ deps-mac:
 # ------------------------------------------------------------------------------
 # Environment
 
-args:
+env:
 ifndef env_name
 	$(error "usage: make <target> env_name=foo")
 endif
 	@echo "Running with environment: $(env_name)"
-
-
-env-error = $(error "ERROR: AWS cli is not configured: run `aws configure` and retry.")
-AWS_ACCESS_KEY_ID := $(shell aws configure get aws_access_key_id)
-AWS_SECRET_ACCESS_KEY := $(shell aws configure get aws_secret_access_key)
-export AWS_ACCESS_KEY_ID
-export AWS_SECRET_ACCESS_KEY
-
-env-vars:
-ifndef AWS_ACCESS_KEY_ID
-	$(call env-error)
-endif
-ifndef AWS_SECRET_ACCESS_KEY
-	$(call env-error)
-endif
-
-
-env: args env-vars
 
 # ------------------------------------------------------------------------------
 # Ansible
@@ -59,8 +41,7 @@ env: args env-vars
 root_dir:=$(shell dirname $(realpath $(lastword $(MAKEFILE_LIST))))
 dynamic_inventory_file := $(root_dir)/inventory/ec2.py
 
-flags := -v
-#-i $(dynamic_inventory_file)
+flags := -v  -i $(dynamic_inventory_file)
 
 extra-vars := \
 --extra-vars dynamic_inventory_file=$(dynamic_inventory_file) \
@@ -68,6 +49,7 @@ extra-vars := \
 --extra-vars AWS_ACCESS_KEY_ID=$(AWS_ACCESS_KEY_ID) \
 --extra-vars AWS_SECRET_ACCESS_KEY=$(AWS_SECRET_ACCESS_KEY) \
 -e @env.yml \
+-e @secrets.yml
 
 # Targets
 
@@ -78,6 +60,6 @@ provision: env
 	ansible-playbook playbooks/provision.yml $(flags) $(extra-vars) --tags "provision"
 
 configure: env
-	ansible-playbook $(flags) $(extra-vars) playbooks/configure.yml --tags "configure"
+	ansible-playbook playbooks/configure.yml $(flags) $(extra-vars) --tags "configure"
 
 all: .vault_pass env provision configure

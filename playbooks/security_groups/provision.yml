@@ -66,6 +66,16 @@
         from_port: 7001
         to_port: 7001
         group_name: "{{ cassandra_sg_name }}"
+      # Thrift inter-node
+      - proto: tcp
+        from_port: 9160
+        to_port: 9160
+        group_name: "{{ cassandra_sg_name }}"
+      # Thrift clients
+      - proto: tcp
+        from_port: 9160
+        to_port: 9160
+        group_name: "{{ api_sg_name }}"
       # CQL inter-node
       - proto: tcp
         from_port: 9042

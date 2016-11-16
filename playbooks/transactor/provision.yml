@@ -14,19 +14,6 @@
     name: "{{ transactor_group_name }}"
     group_name: "{{ transactor_group_name }}"
     security_groups: [ "{{ ssh_sg_name }}", "{{ transactor_sg_name }}" ]
-    vpc_subnet_id: "{{ vpc.subnets[1].id }}"
+    vpc_subnet_id: "{{ vpc.subnets[0].id }}"
     instance_type: "{{ transactor_instance_type }}"
     count: "{{ transactor_instance_count }}"
-
-- name: register transactor facts
-  hosts: localhost
-  connection: local
-  vars:
-    transactor_group: "{{ groups['tag_Group_' + transactor_group_name] }}"
-  tasks:
-    - name: register transactor_host fact
-      set_fact:
-        transactor_host: "{{ hostvars[transactor_group[0]].ansible_eth0.ipv4.address }}"
-    - name: register transactor_hosts fact
-      set_fact:
-        transactor_hosts: "{{ groups[transactor_group] | map('extract', hostvars, ['ansible_default_ipv4', 'address']) | join(',') }}"

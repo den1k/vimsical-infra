@@ -6,13 +6,11 @@
 #
 - name: create s3 log bucket
   s3_bucket: name={{ datomic_ddb_s3_log_bucket_name }}
-  tags:
-    - provision
+  tags: provision
 
 - name: destroy s3 log bucket
   s3_bucket: name={{ datomic_ddb_s3_log_bucket_name }} state=absent force=yes
-  tags:
-    - destroy
+  tags: destroy
 
 # Table
 #
@@ -24,48 +22,35 @@
     hash_key_type: STRING
     read_capacity: 2
     write_capacity: 2
-  tags:
-    - provision
+  tags: provision
 
 - name: destroy dynamo table
   dynamodb_table:
     state: absent
     name: "{{ datomic_ddb_table_name }}"
-    name: "{{ datomic_ddb_table_name }}"
     region: "{{ aws_region }}"
     hash_key_name: id
     hash_key_type: STRING
-  tags:
-    - destroy
+  tags: destroy
 
-# Roles
+# IAM
+#
+# NOTE: need to delete in reverse order
+
+# Provision
 - name: create IAM transactor role
   iam:
     state: present
     iam_type: role
     name: "{{ datomic_iam_transactor_role }}"
-  tags:
-    - provision
-
-- name: destroy IAM transactor role
-  iam: iam_type=role name={{ datomic_iam_transactor_role }} state=absent
-  tags:
-    - destroy
+  tags: provision
 
 - name: create IAM peer role
   iam:
     state: present
     iam_type: role
     name: "{{ datomic_iam_peer_role }}"
-  tags:
-    - provision
-
-- name: destroy IAM peer role
-  iam: iam_type=role name={{ datomic_iam_peer_role }} state=absent
-  tags:
-    - destroy
-
-# Policies
+  tags: provision
 
 - name: create IAM transactor policy
   iam_policy:
@@ -74,17 +59,7 @@
     iam_name: "{{ datomic_iam_transactor_role }}"
     policy_name: "{{ env_name }}_iam_policy_datomic_transactor"
     policy_json: "{{ lookup( 'template', 'transactor_policy.json.j2') }}"
-  tags:
-    - provision
-
-- name: destroy IAM transactor policy
-  iam_policy:
-    state: absent
-    iam_type: role
-    iam_name: "{{ datomic_iam_transactor_role }}"
-    policy_name: "{{ env_name }}_iam_policy_datomic_transactor"
-  tags:
-    - destroy
+  tags: provision
 
 - name: add IAM peer policy
   iam_policy:
@@ -93,14 +68,29 @@
     iam_name: "{{ datomic_iam_peer_role }}"
     policy_name: "{{ env_name }}_iam_policy_datomic_peer"
     policy_json: "{{ lookup( 'template', 'peer_policy.json.j2') }}"
-  tags:
-    - provision
+  tags: provision
 
+# Desrtuction
 - name: destroy IAM peer policy
   iam_policy:
     state: absent
     iam_type: role
     iam_name: "{{ datomic_iam_peer_role }}"
     policy_name: "{{ env_name }}_iam_policy_datomic_peer"
-  tags:
-    - destroy
+  tags: destroy
+
+- name: destroy IAM transactor policy
+  iam_policy:
+    state: absent
+    iam_type: role
+    iam_name: "{{ datomic_iam_transactor_role }}"
+    policy_name: "{{ env_name }}_iam_policy_datomic_transactor"
+  tags: destroy
+
+- name: destroy IAM transactor role
+  iam: iam_type=role name={{ datomic_iam_transactor_role }} state=absent
+  tags: destroy
+
+- name: destroy IAM peer role
+  iam: iam_type=role name={{ datomic_iam_peer_role }} state=absent
+  tags: destroy

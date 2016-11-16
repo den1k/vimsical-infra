@@ -3,18 +3,32 @@
 #
 
 - name: create directory
+  become: true
   file:
     path: "{{ om_dir }}"
     state: directory
 
-- name: clone repo
+# Pull bug with untracked files
+- name: reset repo
+  become: true
+  command: git reset --hard HEAD
+  args:
+    chdir: "{{ om_dir }}"
+
+- name:  "pulling om branch: {{ om_branch }}"
+  become: true
   git:
     repo: https://github.com/vimsical/om.git
     version: "{{ om_branch }}"
     dest: "{{ om_dir }}"
     update: true
+    force: true
+    accept_hostkey: true
+  register: pull
 
 - name: install
-  command: lein install
+  become: true
+  shell: lein clean && lein install
   args:
     chdir: "{{ om_dir }}"
+  when: pull.changed

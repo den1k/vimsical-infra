@@ -12,9 +12,3 @@ datomic_memory_index_max: 256m
 datomic_object_cache_max: 128m
 datomic_write_concurrency: 4
 datomic_read_concurrency: 8
-
-# TODO DRY this, duplicated from dynamodb role
-datomic_ddb_table_name: "vimsical_{{ env_name }}"
-datomic_ddb_s3_log_bucket_name: "vimsical_{{ env_name }}_datomic_logs"
-datomic_iam_peer_role: "vimsical_{{ env_name }}_peer"
-datomic_iam_transactor_role: "vimsical_{{ env_name }}_transactor"

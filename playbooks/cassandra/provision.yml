@@ -8,19 +8,11 @@
     name: "{{ cassandra_group_name }}"
     group_name: "{{ cassandra_group_name }}"
     security_groups: [ "{{ ssh_sg_name }}", "{{ cassandra_sg_name }}" ]
-    vpc_subnet_id: "{{ vpc.subnets[1].id }}"
-    instance_type: m3.large
-    count: 3
+    vpc_subnet_id: "{{ vpc.subnets[0].id }}"
+    instance_type: "{{ cassandra_instance_type }}"
+    count: "{{ cassandra_instance_count }}"
 
-- name: register cassandra facts
-  hosts: localhost
-  connection: local
-  vars:
-    cassandra_group: "{{ groups['tag_Group_' + cassandra_group_name] }}"
-  tasks:
-    - name: register cassandra_host fact
-      set_fact:
-        cassandra_host: "{{ hostvars[cassandra_group[0]].ansible_default_ipv4.address }}"
-    - name: register cassandra_seeds fact
-      set_fact:
-        cassandra_seeds: "{{ groups[cassandra_group] | map('extract', hostvars, ['ansible_default_ipv4', 'address']) | join(',') }}"
+# - name: create keyspace
+#   hosts: "{{ tag_Group_{{ cassandra_group_name }}[0] }}"
+#   command: >-
+#     cqlsh -e "create keyspace if not exists {{ cassandra_keyspace_name }} with replication = {'class': 'SimpleStrategy', 'replication_factor': {{ cassandra_replication_factor }} };"

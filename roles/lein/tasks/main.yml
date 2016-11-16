@@ -5,6 +5,7 @@
 - name: create lein dir
   become: true
   file: path={{ lein_dir }}
+  register: dir
 
 - name: download latest leiningen release
   become: true
@@ -12,6 +13,9 @@
     url: https://raw.github.com/technomancy/leiningen/stable/bin/lein
     dest: "{{ lein_dir }}"
     mode: 0755
+  when: dir.changed
+  register: download
 
 - name: lein bootstrap
   command: lein version
+  when: download.changed

@@ -14,26 +14,32 @@
         name: "{{ vimsical_user }}"
         state: present
   roles:
+    - role: om.next
     - role: uberjar
       vars:
         git_repo: "git@github.com:vimsical/vimsical.git"
+        git_version: "{{ api_git_version }}"
         service_name: "vimsical-api"
         service_description: "Vimsical API"
-        jvm_options: "-Xmx4 -Xms4g"
+        jvm_options: "-Xmx{{ api_jvm_ram }} -Xms{{ api_jvm_ram }}"
         jar_dir: "/home/{{ vimsical_user}}"
         jar_name: "vimsical.jar"
         service_user: "{{ vimsical_user }}"
         service_type: simple
+        uberjar_environment:
+          DATOMIC_LICENSE_KEY: "{{ datomic_license_key }}"
+          DATOMIC_LOGIN: "{{ datomic_login }}"
+          DATOMIC_PASSWORD: "{{ datomic_password }}"
         service_env:
           WEBSOCKET_PORT: "{{ api_websocket_port }}"
           HTTP_PORT: "{{ api_http_port }}"
-          DATOMIC_PROTOCOL: "{{ datomic_protocol}}"
-          DATOMIC_HOST: "{{ transactor_host }}"
+          DATOMIC_HOST: "{{ groups['tag_Group_' + transactor_group_name] | map('extract', hostvars, ['ec2_ip_address']) | first }}"
+          DATOMIC_PROTOCOL: "{{ transactor_protocol}}"
           DATOMIC_PORT: "{{ transactor_port }}"
           DATOMIC_NAME: "{{ transactor_db_name }}"
-          CASSANDRA_HOST: "{{ cassandra_seeds }}"
+          CASSANDRA_HOST: "{{ groups['tag_Group_' + cassandra_group_name] | map('extract', hostvars, ['ec2_ip_address']) | first }}"
           CASSANDRA_PORT: "{{ cassandra_port }}"
-          CASSANDRA_KEYSPACE: "{{ cassandra_keyspace }}"
+          CASSANDRA_KEYSPACE: "{{ cassandra_keyspace_name }}"
           CASSANDRA_REPLICATION_FACTOR: "{{ cassandra_replication_factor }}"
-          REDIS_HOST: "{{ redis_host }}"
+          REDIS_HOST: "{{ groups['elasticache_cluster_' + redis_group_name][0] }}"
           REDIS_PORT: "{{ redis_port }}"

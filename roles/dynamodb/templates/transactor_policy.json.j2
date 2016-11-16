@@ -2,7 +2,6 @@
   "Version": "2012-10-17",
   "Statement": [
     {
-      "Sid": "DynamoDB table access (storage access)",
       "Effect": "Allow",
       "Action": [
         "dynamodb:*"
@@ -10,7 +9,6 @@
       "Resource": "arn:aws:dynamodb:*:{{ aws_account_id }}:table/{{ datomic_ddb_table_name }}"
     },
     {
-      "Sid": "S3 bucket access (log rotation)",
       "Effect": "Allow",
       "Action": [
         "s3:PutObject"
@@ -21,7 +19,6 @@
       ]
     },
     {
-      "Sid": "CloudWatch Metrics",
       "Effect": "Allow",
       "Resource": "*",
       "Condition": {

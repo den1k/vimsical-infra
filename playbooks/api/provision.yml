@@ -8,19 +8,6 @@
     name: "{{ api_group_name }}"
     group_name: "{{ api_group_name }}"
     security_groups: [ "{{ ssh_sg_name }}", "{{ api_sg_name }}" ]
-    vpc_subnet_id: "{{ vpc.subnets[1].id }}"
+    vpc_subnet_id: "{{ vpc.subnets[0].id }}"
     instance_type: "{{ api_instance_type }}"
     count: "{{ api_instance_count }}"
-
-- name: register api facts
-  hosts: localhost
-  connection: local
-  vars:
-    api_group: "{{ groups['tag_Group_' + api_group_name] }}"
-  tasks:
-    - name: register api_host fact
-      set_fact:
-        cassandra_host: "{{ hostvars[api_group[0]].ansible_default_ipv4.address }}"
-    - name: register api_hosts fact
-      set_fact:
-        cassandra_seeds: "{{ groups[api_group] | map('extract', hostvars, ['ansible_default_ipv4', 'address']) | join(',') }}"

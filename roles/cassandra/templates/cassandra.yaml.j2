@@ -421,7 +421,7 @@ seed_provider:
       parameters:
           # seeds is actually a comma-delimited list of addresses.
           # Ex: "<ip1>,<ip2>,<ip3>"
-          - seeds: '{{ cassandra_seeds }}'
+          - seeds: "{{ groups['tag_Group_' + cassandra_group_name] | map('extract', hostvars, ['ec2_ip_address']) | join(',') }}"
 
 # For workloads with more data than can fit in memory, Cassandra's
 # bottleneck will be reads that need to fetch data from
@@ -572,7 +572,7 @@ ssl_storage_port: 7001
 #
 # Setting listen_address to 0.0.0.0 is always wrong.
 #
-listen_address: {{ ansible_default_ipv4.address }}
+listen_address: {{ hostvars[ansible_host].ec2_private_ip_address }}
 
 # Set listen_address OR listen_interface, not both. Interfaces must correspond
 # to a single address, IP aliasing is not supported.
@@ -586,7 +586,7 @@ listen_address: {{ ansible_default_ipv4.address }}
 
 # Address to broadcast to other Cassandra nodes
 # Leaving this blank will set it to the same value as listen_address
-broadcast_address: {{ ansible_default_ipv4.address }}
+broadcast_address: {{ hostvars[ansible_host].ec2_ip_address }}
 
 # When using multiple physical network interfaces, set this
 # to true to listen on broadcast_address in addition to
@@ -668,7 +668,7 @@ rpc_port: 9160
 # be set to 0.0.0.0. If left blank, this will be set to the value of
 # rpc_address. If rpc_address is set to 0.0.0.0, broadcast_rpc_address must
 # be set.
-broadcast_rpc_address: {{ ansible_default_ipv4.address }}
+broadcast_rpc_address: {{ hostvars[ansible_host].ec2_ip_address }}
 
 # enable or disable keepalive on rpc/native connections
 rpc_keepalive: true

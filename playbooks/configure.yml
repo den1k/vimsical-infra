@@ -8,13 +8,6 @@
   roles:
     - { role: ec2_keypair }
 
-# - hosts: all
-#   remote_user: root
-#   pre_tasks:
-#     - name: install python2
-#       raw: sudo apt-get install -y python-simplejson
-#   tasks: []
-
 - include: cassandra/configure.yml
 - include: transactor/configure.yml
 - include: api/configure.yml
