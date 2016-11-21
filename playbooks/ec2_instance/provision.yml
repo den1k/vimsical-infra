@@ -65,9 +65,6 @@
       shell: "{{ dynamic_inventory_file }} --refresh-cache > /dev/null"
       when: ec2.changed
 
-    - meta: refresh_inventory
-      when: ec2.changed
-
 - name: install managed node dependencies
   hosts: launched
   become: yes
