@@ -115,14 +115,6 @@
         from_port: 4334
         to_port: 4334
         group_name: "{{ peer_sg_name }}"
-      - proto: tcp
-        from_port: 4335
-        to_port: 4335
-        group_name: "{{ peer_sg_name }}"
-      - proto: tcp
-        from_port: 4336
-        to_port: 4336
-        group_name: "{{ peer_sg_name }}"
     rules_egress:
       - proto: all
         cidr_ip: 0.0.0.0/0

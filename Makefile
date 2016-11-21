@@ -33,7 +33,7 @@ endif
 	@echo "Running with environment: $(env_name)"
 
 # ------------------------------------------------------------------------------
-# Ansible
+# Ansible config
 
 # Config
 
@@ -41,7 +41,7 @@ endif
 root_dir:=$(shell dirname $(realpath $(lastword $(MAKEFILE_LIST))))
 dynamic_inventory_file := $(root_dir)/inventory/ec2.py
 
-flags := -v  -i $(dynamic_inventory_file)
+flags := -v -i $(dynamic_inventory_file)
 
 extra-vars := \
 --extra-vars dynamic_inventory_file=$(dynamic_inventory_file) \
@@ -51,6 +51,7 @@ extra-vars := \
 -e @env.yml \
 -e @secrets.yml
 
+# ------------------------------------------------------------------------------
 # Targets
 
 destroy: env

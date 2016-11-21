@@ -34,8 +34,8 @@
         monitoring: "{{ monitoring }}"
         termination_protection: "{{ termination_protection }}"
         instance_tags:
-          Name: "{{ redis_group_name }}"
-          Group: "{{ redis_group_name }}"
+          Name: "{{ group_name }}"
+          Group: "{{ group_name }}"
           Environment: "{{ env_name }}"
         exact_count: "{{ count }}"
         count_tag:
@@ -44,15 +44,6 @@
           Environment: "{{ env_name }}"
         wait: "{{ wait }}"
       register: ec2
-
-    - name: mark as needing provisioning
-      ec2_tag:
-        resource: "{{ item.id }}"
-        region: "{{ aws_region }}"
-        tags:
-          Provision: true
-      when: ec2.changed
-      with_items: "{{ ec2.tagged_instances }}"
 
     - name: wait for ssh
       wait_for:
@@ -63,13 +54,12 @@
       with_items: "{{ ec2.tagged_instances }}"
       when: wait and ec2.changed
 
-    # NOTE Yet another bug, looks like the output is not parsed properly?
-    # Something to do with the exact_count option...
-    # - name: create temp group
-    #   add_host:
-    #     name: "{{ item.public_ip }}"
-    #     groups: new-instances
-    #   with_items: "{{ ec2.tagged_instances }}"
+    - name: add to launched group
+      add_host:
+        name: "{{ item.public_ip }}"
+        groups: launched
+      with_items: "{{ ec2.tagged_instances }}"
+      when: ec2.changed
 
     - name: refresh inventory cache
       shell: "{{ dynamic_inventory_file }} --refresh-cache > /dev/null"
@@ -79,7 +69,7 @@
       when: ec2.changed
 
 - name: install managed node dependencies
-  hosts: "tag_Group_Provision"
+  hosts: launched
   become: yes
   remote_user: root
   gather_facts: no # this is critical
@@ -89,14 +79,6 @@
     - raw: sudo apt-get install -y python-simplejson
   roles:
     - { role: ubuntu }
-  tasks:
-    - name: mark as provisioned
-      ec2_tag:
-        resource: "{{ hostvars[ansible_hostname].ec2_id }}"
-        region: "{{ aws_region }}"
-        state: absent
-        tags:
-          Provision: true
 
 # Destroy ec2 instance(s)
 #

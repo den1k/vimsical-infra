@@ -33,9 +33,8 @@
         service_env:
           WEBSOCKET_PORT: "{{ api_websocket_port }}"
           HTTP_PORT: "{{ api_http_port }}"
-          DATOMIC_HOST: "{{ groups['tag_Group_' + transactor_group_name] | map('extract', hostvars, ['ec2_ip_address']) | first }}"
           DATOMIC_PROTOCOL: "{{ transactor_protocol}}"
-          DATOMIC_PORT: "{{ transactor_port }}"
+          DATOMIC_DDB_TABLE: "{{ datomic_ddb_table_name }}"
           DATOMIC_NAME: "{{ transactor_db_name }}"
           CASSANDRA_HOST: "{{ groups['tag_Group_' + cassandra_group_name] | map('extract', hostvars, ['ec2_ip_address']) | first }}"
           CASSANDRA_PORT: "{{ cassandra_port }}"
