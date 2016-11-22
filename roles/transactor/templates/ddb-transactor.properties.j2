@@ -54,9 +54,9 @@ aws-peer-role="{{ datomic_iam_peer_role }}"
 ################################################################
 # See http://docs.datomic.com/capacity.html
 
-memory-index-threshold={{ datomic_memory_index_threshold }}
-memory-index-max={{ datomic_memory_index_max }}
-object-cache-max={{ datomic_object_cache_max }}
+memory-index-threshold={{ transactor_memory_index_threshold }}
+memory-index-max={{ transactor_memory_index_max }}
+object-cache-max={{ transactor_object_cache_max }}
 
 ## OPTIONAL ####################################################
 
