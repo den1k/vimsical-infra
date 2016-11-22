@@ -14,8 +14,13 @@
     force: true
     accept_hostkey: true
 
+- name: clean
+  command: "{{ lein }} clean"
+  args:
+    chdir: "{{ git_repo_dir }}"
+
 - name: create uberjar
-  shell: "{{ uberjar_command }}"
+  command: "{{ uberjar_command }} {{ uberjar_args }}"
   args:
     chdir: "{{ git_repo_dir }}"
     creates: "{{ git_repo_dir }}/target/{{ jar_name }}"
