@@ -1,7 +1,8 @@
 ################################################################
 
 protocol=ddb
-host=localhost
+host={{ hostvars[ansible_host].ec2_private_ip_address }}
+alt-host={{ hostvars[ansible_host].ec2_ip_address }}
 port=4334
 
 
