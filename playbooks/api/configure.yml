@@ -48,7 +48,7 @@
           AWS_SECRET_ACCESS_KEY: "{{ aws_secret_access_key }}"
           DATOMIC_DDB_TABLE: "{{ datomic_ddb_table_name }}"
           DATOMIC_NAME: "{{ transactor_db_name }}"
-          CASSANDRA_HOST: "{{ groups['tag_Group_' + cassandra_group_name] | map('extract', hostvars, ['ec2__private_ip_address']) | join(',') }}"
+          CASSANDRA_HOST: "{{ groups['tag_Group_' + cassandra_group_name] | map('extract', hostvars, ['ec2_private_ip_address']) | join(',') }}"
           CASSANDRA_PORT: "{{ cassandra_port }}"
           CASSANDRA_KEYSPACE: "{{ cassandra_keyspace_name }}"
           CASSANDRA_REPLICATION_FACTOR: "{{ cassandra_replication_factor }}"
