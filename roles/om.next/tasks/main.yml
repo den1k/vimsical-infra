@@ -28,7 +28,7 @@
 
 - name: install
   become: true
-  shell: lein clean && lein install
+  command: "{{ lein }} install"
   args:
     chdir: "{{ om_dir }}"
   when: pull.changed

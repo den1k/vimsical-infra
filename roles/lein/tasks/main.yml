@@ -11,9 +11,8 @@
   become: true
   get_url:
     url: https://raw.github.com/technomancy/leiningen/stable/bin/lein
-    dest: "{{ lein_dir }}"
+    dest: "{{ lein }}"
     mode: 0755
-  when: dir.changed
   register: download
 
 - name: lein bootstrap
