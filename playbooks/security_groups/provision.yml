@@ -38,11 +38,6 @@
         from_port: "{{ api_http_port }}"
         to_port: "{{ api_http_port }}"
         group_name: "{{ alb_sg_name }}"
-      # Websocket
-      - proto: tcp
-        from_port: "{{ api_websocket_port }}"
-        to_port: "{{ api_websocket_port }}"
-        group_name: "{{ alb_sg_name }}"
     rules_egress:
       - proto: all
         cidr_ip: 0.0.0.0/0
