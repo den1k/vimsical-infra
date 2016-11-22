@@ -20,6 +20,7 @@
     chdir: "{{ git_repo_dir }}"
 
 - name: create uberjar
+  become: true
   command: "{{ uberjar_command }} {{ uberjar_args }}"
   args:
     chdir: "{{ git_repo_dir }}"
@@ -37,7 +38,9 @@
     dest: "{{ jar_dir }}"
     owner: "{{ service_user }}"
 
-- file:
+- name: remove jar
+  become: true
+  file:
     path: "{{ git_repo_dir }}/target/{{ jar_name }}"
     state: absent
 
