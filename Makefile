@@ -35,8 +35,6 @@ endif
 # ------------------------------------------------------------------------------
 # Ansible config
 
-# Config
-
 # BUG: https://github.com/ansible/ansible/issues/16857
 root_dir:=$(shell dirname $(realpath $(lastword $(MAKEFILE_LIST))))
 dynamic_inventory_file := $(root_dir)/inventory/ec2.py
@@ -46,8 +44,6 @@ flags := -v -i $(dynamic_inventory_file)
 extra-vars := \
 --extra-vars dynamic_inventory_file=$(dynamic_inventory_file) \
 --extra-vars env_name=$(env_name) \
---extra-vars AWS_ACCESS_KEY_ID=$(AWS_ACCESS_KEY_ID) \
---extra-vars AWS_SECRET_ACCESS_KEY=$(AWS_SECRET_ACCESS_KEY) \
 -e @env.yml \
 -e @secrets.yml
 
