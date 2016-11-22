@@ -10,5 +10,6 @@ transactor_max_ram: 4g
 transactor_memory_index_threshold: 32m
 transactor_memory_index_max: 256m
 transactor_object_cache_max: 128m
-datomic_write_concurrency: 4
-datomic_read_concurrency: 8
+transactor_enable_ssl: false
+transactor_write_concurrency: 4
+transactor_read_concurrency: 8

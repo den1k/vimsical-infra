@@ -93,11 +93,11 @@ log-dir={{ datomic_log_dir }}
 
 # Soft limit on the number of concurrent writes to storage.
 # Default: 4, Miniumum: 2
- write-concurrency={{ datomic_write_concurrency }}
+ write-concurrency={{ transactor_write_concurrency }}
 
 # Soft limit on the number of concurrent reads to storage.
 # Default: 2 times write-concurrency, Miniumum: 2
-read-concurrency={{ datomic_read_concurrency}}
+read-concurrency={{ transactor_read_concurrency}}
 
 
 
