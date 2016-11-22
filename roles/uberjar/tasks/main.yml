@@ -54,13 +54,10 @@
     src: unit.service.j2
     dest: "/etc/systemd/system/{{ service_name }}.service"
 
-- name: reload systemd
-  become: true
-  command: systemctl daemon-reload
-
 - name: start service
   become: true
   systemd:
     enabled: true
+    daemon_reload: true
     name: "{{ service_name }}"
-    state: started
+    state: restarted
