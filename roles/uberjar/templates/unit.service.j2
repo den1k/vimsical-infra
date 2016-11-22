@@ -2,13 +2,13 @@
 Description={{ service_description }}
 
 [Service]
-{% for name, value in service_env.iteritems() %}
-Environment="{{ name }}={{ value }}"
+{% for k, v in service_env.iteritems() %}
+Environment="{{ k }}={{ v }}"
 {% endfor %}
-ExecStart=/bin/sh -c '/usr/bin/java {{ jvm_options }} -jar {{ jar_dir }}/{{ jar_name }}'
+ExecStart=/usr/bin/java {{ jvm_options }} -jar {{ jar_dir }}/{{ jar_name }}
 Type={{ service_type }}
 User={{ service_user }}
-Restart = {{ service_restart }}
-
+Restart={{ service_restart }}
+RestartSec=30
 [Install]
 WantedBy={{ service_target }}
