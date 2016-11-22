@@ -8,13 +8,6 @@
     path: "{{ om_dir }}"
     state: directory
 
-# Pull bug with untracked files
-- name: reset repo
-  become: true
-  command: git reset --hard HEAD
-  args:
-    chdir: "{{ om_dir }}"
-
 - name:  "pulling om branch: {{ om_branch }}"
   become: true
   git:
@@ -26,9 +19,23 @@
     accept_hostkey: true
   register: pull
 
+- name: clean
+  become: true
+  command: "{{ lein }} clean"
+  args:
+    chdir: "{{ om_dir }}"
+  when: pull.changed
+
 - name: install
   become: true
   command: "{{ lein }} install"
   args:
     chdir: "{{ om_dir }}"
   when: pull.changed
+
+# Pull bug with untracked files
+- name: reset repo
+  become: true
+  command: git reset --hard HEAD
+  args:
+    chdir: "{{ om_dir }}"
