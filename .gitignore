@@ -1,2 +1,4 @@
 /.vault_pass
 *.retry
+/facts.yml
+.vagrant/
