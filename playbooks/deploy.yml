@@ -4,7 +4,6 @@
 - hosts: "tag_Group_{{ api_group_name }}"
   tags:
     - deploy
-
   roles:
     - role: om.next
     - role: uberjar
