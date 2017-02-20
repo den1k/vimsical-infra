@@ -27,10 +27,10 @@ install-mac:
 # Environment
 
 env:
-ifndef env_name
-	$(error "usage: make <target> env_name=foo")
+ifndef env
+	$(error "usage: make <target> env=foo")
 endif
-	@echo "Running with environment: $(env_name)"
+	@echo "Running with environment: $(env)"
 
 # ------------------------------------------------------------------------------
 # Ansible config
@@ -43,7 +43,7 @@ flags := -v -i $(dynamic_inventory_file)
 
 extra-vars := \
 --extra-vars dynamic_inventory_file=$(dynamic_inventory_file) \
---extra-vars env_name=$(env_name) \
+--extra-vars env_name=$(env) \
 -e @env.yml \
 -e @secrets.yml
 
@@ -59,4 +59,8 @@ provision: env
 configure: env
 	ansible-playbook playbooks/configure.yml $(flags) $(extra-vars) --tags "configure"
 
-all: .vault_pass env provision configure
+deploy: env
+	ansible-playbook playbooks/deploy.yml $(flags) $(extra-vars) --tags "deploy"
+
+
+all: .vault_pass env provision configure deploy
