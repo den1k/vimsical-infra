@@ -73,7 +73,7 @@
   tags:
     - provision
   pre_tasks:
-    - raw: sudo apt-get install -y python-simplejson
+    - raw: test -e /usr/bin/python || (sudo apt -y update && sudo apt install -y python-minimal)
   roles:
     - { role: ubuntu }
 
