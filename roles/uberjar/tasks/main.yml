@@ -60,4 +60,4 @@
     enabled: true
     daemon_reload: true
     name: "{{ service_name }}"
-    state: reloaded
+    state: restarted
