@@ -46,6 +46,7 @@
   gather_facts: false
   tags: destroy
   vars:
+    cluster_name: "{{ env_name }}-redis"
     cluster_az: "{{ aws_region }}a" # TODO duplicated from VPC provisioning
     cluster_subnet_name: "{{ cluster_az }}-subnet-group"
   tasks:
