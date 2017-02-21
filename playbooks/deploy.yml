@@ -31,6 +31,7 @@
           ENV: "{{ env_name }}"
         service_env:
           HTTP_PORT: "{{ api_http_port }}"
+          HTTP_BIND_HOST: "{{ api_http_bind_host }}"
           DATOMIC_PROTOCOL: "{{ transactor_protocol}}"
           AWS_REGION: "{{ aws_region }}"
           AWS_ACCESS_KEY_ID: "{{ aws_access_key_id }}"
