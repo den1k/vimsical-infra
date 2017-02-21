@@ -1,5 +1,5 @@
 ---
-datomic_version: 0.9.5394
+datomic_version: 0.9.5544
 datomic_download_dir: "/tmp/datomic-{{ datomic_version }}"
 datomic_home_parent: "/usr/local/bin"
 datomic_home_name: "datomic-pro-{{ datomic_version }}"
