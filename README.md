@@ -1,12 +1,47 @@
-# TODO
+# TODO Overview
+## Provisioning
+## Configuration
+## Deployment
 
-- extract systemd unit role from transactor and uberjar roles
+# Admin tasks
+## SSH into a machine
 
-- setup with jump host
-http://docs.ansible.com/ansible/faq.html#how-do-i-configure-a-jump-host-to-access-servers-that-i-have-no-direct-access-to
-https://bonovoxly.github.io/2016-07-05-bastion-host-private-vpc-aws
-https://spin.atomicobject.com/2016/05/16/ansible-aws-ec2-vpc/
+The provisioning playbooks saves the keypairs to the machine running ansible, in `~/.ssh/<env>.pem`
 
-- collect cassandra metrics
+```sh
+ssh -i ~/.ssh/<env>.pem ubuntu@<ec2_ip>
+```
 
-- use the package module rather than apt http://docs.ansible.com/ansible/package_module.html
+## Datomic (transactor)
+
+Runs as a systemd unit in `/etc/systemd/system/datomic-transactor.service`
+### Config
+
+`DATOMIC_HOME` is in `/var/datomic/`.
+
+
+## Cassandra
+
+### Config
+
+We use the default configuration directory and path: `/etc/cassandra/cassandra.yml`
+
+### Health check
+
+Get a status of the cluster with
+
+```sh
+nodetool status
+```
+
+## API
+
+### Config
+
+The API jar runs as a systemd unit, located in `/etc/systemd/system/vimsica-api.service`
+
+### Logs
+
+```sh
+journalctl -u vimsical-api.service
+```
