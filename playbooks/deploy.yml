@@ -28,6 +28,7 @@
           REMOTE_PORT: "{{ api_remote_port }}"
           REMOTE_PATH: "{{ api_remote_path }}"
           CSRF: "{{ api_csrf }}"
+          ENV: "{{ env_name }}"
         service_env:
           HTTP_PORT: "{{ api_http_port }}"
           DATOMIC_PROTOCOL: "{{ transactor_protocol}}"
@@ -43,3 +44,4 @@
           REDIS_HOST: "{{ groups['elasticache_cluster_' + redis_group_name][0] }}"
           REDIS_PORT: "{{ redis_port }}"
           CSRF: "{{ api_csrf }}"
+          ENV: "{{ env_name }}"
