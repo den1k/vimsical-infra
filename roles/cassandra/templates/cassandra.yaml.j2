@@ -421,7 +421,7 @@ seed_provider:
       parameters:
           # seeds is actually a comma-delimited list of addresses.
           # Ex: "<ip1>,<ip2>,<ip3>"
-          - seeds: "{{ groups['tag_Group_' + cassandra_group_name] | map('extract', hostvars, ['ec2_ip_address']) | join(',') }}"
+          - seeds: "{{ groups['tag_Group_' + cassandra_group_name] | map('extract', hostvars, ['ec2_private_ip_address']) | join(',') }}"
 
 # For workloads with more data than can fit in memory, Cassandra's
 # bottleneck will be reads that need to fetch data from
@@ -586,7 +586,7 @@ listen_address: {{ hostvars[ansible_host].ec2_private_ip_address }}
 
 # Address to broadcast to other Cassandra nodes
 # Leaving this blank will set it to the same value as listen_address
-broadcast_address: {{ hostvars[ansible_host].ec2_ip_address }}
+broadcast_address:
 
 # When using multiple physical network interfaces, set this
 # to true to listen on broadcast_address in addition to
