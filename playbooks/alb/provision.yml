@@ -66,6 +66,12 @@
   tasks:
     - include: alb_facts.yml
     - include: target_group_facts.yml
+    - include: listeners_facts.yml
+
+    - name: destroy listeners
+      command: >-
+        aws elbv2 delete-listener --listener-arn {{ item }}
+      with_items: "{{ alb_listener_arns }}"
 
     - name: destroy alb http target group
       command: >-

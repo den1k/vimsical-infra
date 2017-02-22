@@ -1,0 +1,11 @@
+---
+# Gather facts on ALB listeners
+
+- name: gather alb listeners facts
+  command: >-
+    aws elbv2 describe-listeners --load-balancer-arn {{ alb_arn }}
+  register: listeners
+
+- name: register alb_listeners facts
+  set_fact:
+    alb_listener_arns: "{{ (listeners.stdout|from_json).Listeners | map(attribute='ListenerArn') | list }}"
