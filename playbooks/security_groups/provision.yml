@@ -23,7 +23,7 @@
     rules_egress:
       - proto: all
         cidr_ip: 0.0.0.0/0
-  register: alg_sg
+  register: alb_sg
   tags: provision
 
 - name: create api security group

@@ -1,18 +1,25 @@
 ---
-# Configure Application load balancer
+# Register API instances with the application load balancer
 
 - hosts: localhost
   connection: local
   gather_facts: false
   tags: configure
-  vars:
-    alb_target_instance_ids:
-
-  # alb_target_group_arn arn:aws:elasticloadbalancing:us-east-1:your-target-group
   tasks:
-    - name: Register target instance with alb
+    - include: alb_facts.yml
+    - include: target_group_facts.yml
+
+    - name: Register instance with alb http target
       command: >-
         aws elbv2 register-targets
-        --target-group-arn {{ alb_target_group_arn }}
-        --targets Id={{ item }}
-      with_items: "{{ alb_target_instance_ids }}"
+        --target-group-arn {{ alb_http_target_group_arn }}
+        --targets Id={{ hostvars[item].ec2_id }}
+      with_items: "{{ groups['tag_Group_' + api_group_name] }}"
+
+    - name: Register instance with alb https target
+      command: >-
+        aws elbv2 register-targets
+        --target-group-arn {{ alb_https_target_group_arn }}
+        --targets Id={{ hostvars[item].ec2_id }}
+      with_items: "{{ groups['tag_Group_' + api_group_name] }}"
+      when: env_name == 'prod'

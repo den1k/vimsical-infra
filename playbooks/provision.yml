@@ -8,4 +8,4 @@
 - include: transactor/provision.yml
 - include: redis/provision.yml
 - include: api/provision.yml
-# - include: alb/provision.yml
+- include: alb/provision.yml

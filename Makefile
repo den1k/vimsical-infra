@@ -1,8 +1,7 @@
 .PHONY: .vault_passs env inventory
 
 # ------------------------------------------------------------------------------
-# System deps
-# Run this targets to install dependencies on driver machine
+# System deps for the driver machine
 
 # NOTE DO NOT install ansible with brew!
 
@@ -50,9 +49,6 @@ extra-vars := \
 # ------------------------------------------------------------------------------
 # Targets
 
-destroy: env
-	ansible-playbook playbooks/destroy.yml $(flags) $(extra-vars) --tags "destroy"
-
 provision: env
 	ansible-playbook playbooks/provision.yml $(flags) $(extra-vars) --tags "provision"
 
@@ -62,5 +58,7 @@ configure: env
 deploy: env
 	ansible-playbook playbooks/deploy.yml $(flags) $(extra-vars) --tags "deploy"
 
+destroy: env
+	ansible-playbook playbooks/destroy.yml $(flags) $(extra-vars) --tags "destroy"
 
 all: .vault_pass env provision configure deploy

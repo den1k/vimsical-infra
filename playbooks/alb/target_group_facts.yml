@@ -1,0 +1,21 @@
+---
+# Set alb target group facts using the aws cli
+
+- name: gather target group facts
+  command: >-
+    aws elbv2 describe-target-groups --load-balancer-arn {{ alb_arn }}
+  register: alb_target_groups
+
+- name: set http target group arn fact
+  set_fact:
+    alb_http_target_group_arn: "{{ item.TargetGroupArn }}"
+  with_items: "{{ (alb_target_groups.stdout|from_json).TargetGroups }}"
+  when: item.Port == 80
+
+- name: set https target group arn fact
+  set_fact:
+    alb_https_target_group_arn: "{{ item.TargetGroupArn }}"
+  with_items: "{{ (alb_target_groups.stdout|from_json).TargetGroups }}"
+  when:
+    - item.Port == 443
+    - env_name == 'prod'

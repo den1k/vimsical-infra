@@ -11,3 +11,4 @@
 - include: cassandra/configure.yml
 - include: transactor/configure.yml
 - include: api/configure.yml
+- include: alb/configure.yml

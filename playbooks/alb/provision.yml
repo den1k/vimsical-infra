@@ -1,43 +1,80 @@
 ---
 # Provision ALB
 #
-
-# TODO register ARN from alb creation:
-# http://stackoverflow.com/questions/39946284/how-do-i-register-a-variable-in-ansible-pulled-from-json-output
+# NOTE don't attach the VPC's private subnets!
 
 - hosts: localhost
   connection: local
   gather_facts: false
+  tags: provision
   tasks:
-    - name: create ALB
+    - name: create alb
       command: >-
         aws elbv2 create-load-balancer
-        --name {{ alb_group_name }}
-        --subnets {{ vpc.subnets }}
-        --security-groups {{ alb_sg_name }}
-        --scheme internet-facing
-        --tags Key=Group,Value={{ alb_group_name }},Key=Environment,Value={{ env_name }}
+        --name {{ alb_name }}
+        --subnets "{{ vpc.subnets[0].id }}" "{{ vpc.subnets[1].id }}"
+        --security-groups {{ alb_sg.group_id }}
+        --tags Key=Name,Value={{ alb_name }},Key=Group,Value={{ alb_group_name }},Key=Environment,Value={{ env_name }}
+
+    - include: alb_facts.yml
 
     - name: create http target group
       command: >-
         aws elbv2 create-target-group
-          --name {{ alb_group_name }}-http-target-group
-          --protocol http
+          --name {{ alb_http_target_group_name }}
+          --protocol HTTP
           --port 80
           --vpc-id {{ vpc.vpc_id }}
-          --health-check-protocol http
+          --health-check-protocol HTTP
 
-    - name: add http listener
+    - name: create https target group
       command: >-
-        aws elbv2 create-listener
-          --load-balancer-arn {{ arn }}
-          --protocol http
-          --port 80
-
-    - name: add https listener
-      command: >-
-        aws elbv2 create-listener
-          --load-balancer-arn {{ arn }}
-          --protocol https
+        aws elbv2 create-target-group
+          --name {{ alb_https_target_group_name }}
+          --protocol HTTPS
           --port 443
-          --certificates {{ cert }}
+          --vpc-id {{ vpc.vpc_id }}
+          --health-check-protocol HTTP
+      when: env_name == 'prod'
+
+    - include: target_group_facts.yml
+
+    - name: create http listener
+      command: >-
+        aws elbv2 create-listener
+          --load-balancer-arn {{ alb_arn }}
+          --protocol HTTP
+          --port 80
+          --default-actions Type=forward,TargetGroupArn={{ alb_http_target_group_arn }}
+
+
+    - name: create alb https listener
+      command: >-
+        aws elbv2 create-listener
+          --load-balancer-arn {{ alb_arn }}
+          --protocol HTTPS
+          --port 443
+          --certificates {{ prod_ssl_cert_arn }}
+          --default-actions Type=forward,TargetGroupArn={{ alb_https_target_group_arn }}
+      when: env_name == 'prod'
+
+- hosts: localhost
+  connection: local
+  gather_facts: false
+  tags: destroy
+  tasks:
+    - include: alb_facts.yml
+    - include: target_group_facts.yml
+
+    - name: destroy alb http target group
+      command: >-
+        aws elbv2 delete-target-group --target-group-arn {{ alb_http_target_group_arn }}
+
+    - name: destroy alb https target group
+      command: >-
+        aws elbv2 delete-target-group --target-group-arn {{ alb_https_target_group_arn }}
+      when: env_name == 'prod'
+
+    - name: destroy alb
+      command: >-
+        aws elbv2 delete-load-balancer --load-balancer-arn {{ alb_arn }}
