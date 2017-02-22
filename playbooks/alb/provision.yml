@@ -2,6 +2,7 @@
 # Provision ALB
 #
 # NOTE don't attach the VPC's private subnets!
+# NOTE subnets need to be string quoted for the create-load-balancer command
 
 - hosts: localhost
   connection: local
