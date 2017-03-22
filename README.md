@@ -1,4 +1,11 @@
 # TODO Overview
+
+## Usage
+
+```
+make <target> env=<target env name>
+```
+
 ## Provisioning
 ## Configuration
 ## Deployment

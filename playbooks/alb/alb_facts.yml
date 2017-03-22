@@ -12,3 +12,9 @@
     alb_arn: "{{ item.LoadBalancerArn }}"
   with_items: "{{ (alb.stdout|from_json).LoadBalancers }}"
   when: item.LoadBalancerName == "{{ alb_name }}"
+
+- name: set alb dns fact
+  set_fact:
+    alb_dns: "{{ item.DNSName }}"
+  with_items: "{{ (alb.stdout|from_json).LoadBalancers }}"
+  when: item.LoadBalancerName == "{{ alb_name }}"

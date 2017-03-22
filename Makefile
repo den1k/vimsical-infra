@@ -1,5 +1,6 @@
 .PHONY: .vault_passs env inventory
 
+
 # ------------------------------------------------------------------------------
 # System deps for the driver machine
 
@@ -14,6 +15,7 @@ install-mac:
 	sudo easy_install pip
 	sudo pip install ansible==2.2 boto
 
+
 # ------------------------------------------------------------------------------
 # Vault
 
@@ -21,6 +23,7 @@ install-mac:
 	echo "ERROR: missing .vault_pass file"
 	echo "HINT: echo \"secret_password\" > .vault_pass"
 	exit 1
+
 
 # ------------------------------------------------------------------------------
 # Environment
@@ -30,6 +33,7 @@ ifndef env
 	$(error "usage: make <target> env=foo")
 endif
 	@echo "Running with environment: $(env)"
+
 
 # ------------------------------------------------------------------------------
 # Ansible config
@@ -46,6 +50,7 @@ extra-vars := \
 -e @env.yml \
 -e @secrets.yml
 
+
 # ------------------------------------------------------------------------------
 # Targets
 
@@ -57,6 +62,9 @@ configure: env
 
 deploy: env
 	ansible-playbook playbooks/deploy.yml $(flags) $(extra-vars) --tags "deploy"
+
+web: env
+	ansible-playbook playbooks/deploy/web.yml $(flags) $(extra-vars) --tags "deploy"
 
 destroy: env
 	ansible-playbook playbooks/destroy.yml $(flags) $(extra-vars) --tags "destroy"

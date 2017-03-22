@@ -1,0 +1,57 @@
+---
+# Frontend deployment playbook
+#
+
+# NOTE: Get the facts from the ALB so that the compiled cljs code can reference
+# the load balancer as the host for its remotes
+
+- include: ../alb/alb_facts.yml
+
+- hosts: localhost
+  tags:
+    - deploy
+    - web
+
+  roles:
+    - role: om.next
+
+  tasks:
+
+    - name: clean
+      command: "{{ lein }} clean"
+      args:
+        chdir: "{{ git_repo_dir }}"
+
+    - name: compile cljs
+      command: "{{ lein }} cljs build once prod"
+      args:
+        chdir: "{{ git_repo_dir }}"
+        environment:
+          S3_AUDIO_ZONE: "{{ s3_audio_zone }}"
+          S3_AUDIO_BUCKET: "{{ s3_audio_bucket }}"
+          # S3_SIGN_PROTOCOL: "http"
+          S3_SIGN_HOST: "{{ alb_dns }}"
+          # S3_SIGN_PORT: "{{ api_http_port }}"
+          S3_SIGN_PATH: "{{ s3_sign_path }}"
+          WEBSOCKET_HOST: "{{ alb_dns }}"
+          # WEBSOCKET_PORT: "{{ api_websocket_port }}"
+          WEBSOCKET_PATH: "{{ api_websocket_path }}"
+          REMOTE_HOST: "{{ alb_dns }}"
+          # REMOTE_PORT: "{{ api_remote_port }}"
+          REMOTE_PATH: "{{ api_remote_path }}"
+          CSRF: "{{ api_csrf }}"
+
+    - name: upload artifacts to s3
+      command: >-
+        aws s3 cp
+        ./resources/public/
+        s3://"{{ s3_web_bucket }}"/
+        --recursive --include *.*
+      args:
+        chdir: "{{ git_repo_dir }}"
+
+    - name: Invalidate cloudfront distribution
+      command: >-
+        aws cloundfront create-invalidation
+        --distribution-id "{{ s3_web_bucket_cf_distribution_id }}"
+        --paths /*

@@ -1,48 +1,5 @@
 # Deployment playbook
 #
 
-- hosts: "tag_Group_{{ api_group_name }}"
-  tags:
-    - deploy
-  roles:
-    - role: om.next
-    - role: uberjar
-      vars:
-        git_repo: "git@github.com:vimsical/vimsical.git"
-        git_version: "{{ api_git_version }}"
-        service_name: "vimsical-api"
-        service_description: "Vimsical"
-        jvm_options: "-Xmx{{ api_jvm_ram }} -Xms{{ api_jvm_ram }}"
-        jar_dir: "/home/{{ api_user}}"
-        jar_name: "vimsical.jar"
-        service_user: "{{ api_user }}"
-        service_type: simple
-        uberjar_environment:
-          AWS_ACCESS_KEY_ID: "{{ aws_access_key_id }}"
-          AWS_SECRET_ACCESS_KEY: "{{ aws_secret_access_key }}"
-          DATOMIC_LICENSE_KEY: "{{ datomic_license_key }}"
-          DATOMIC_LOGIN: "{{ datomic_login }}"
-          DATOMIC_PASSWORD: "{{ datomic_password }}"
-          WEBSOCKET_PORT: "{{ api_websocket_port }}"
-          WEBSOCKET_PATH: "{{ api_websocket_path }}"
-          REMOTE_PORT: "{{ api_remote_port }}"
-          REMOTE_PATH: "{{ api_remote_path }}"
-          CSRF: "{{ api_csrf }}"
-          ENV: "{{ env_name }}"
-        service_env:
-          HTTP_PORT: "{{ api_http_port }}"
-          HTTP_BIND_HOST: "{{ api_http_bind_host }}"
-          DATOMIC_PROTOCOL: "{{ transactor_protocol}}"
-          AWS_REGION: "{{ aws_region }}"
-          AWS_ACCESS_KEY_ID: "{{ aws_access_key_id }}"
-          AWS_SECRET_ACCESS_KEY: "{{ aws_secret_access_key }}"
-          DATOMIC_DDB_TABLE: "{{ datomic_ddb_table_name }}"
-          DATOMIC_NAME: "{{ transactor_db_name }}"
-          CASSANDRA_HOST: "{{ groups['tag_Group_' + cassandra_group_name] | map('extract', hostvars, ['ec2_private_ip_address']) | join(',') }}"
-          CASSANDRA_PORT: "{{ cassandra_port }}"
-          CASSANDRA_KEYSPACE: "{{ cassandra_keyspace_name }}"
-          CASSANDRA_REPLICATION_FACTOR: "{{ cassandra_replication_factor }}"
-          REDIS_HOST: "{{ groups['elasticache_cluster_' + redis_group_name][0] }}"
-          REDIS_PORT: "{{ redis_port }}"
-          CSRF: "{{ api_csrf }}"
-          ENV: "{{ env_name }}"
+- include: ./deploy/api.yml
+- include: ./deploy/web.yml
