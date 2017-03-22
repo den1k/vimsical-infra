@@ -77,6 +77,20 @@
   roles:
     - { role: ubuntu }
 
+- name: create volumes
+  hosts: localhost
+  connection: local
+  gather_facts: false
+  takes:
+    - name: create ebs volumes
+      ec2_vol:
+        instance: "{{ item }}"
+        device_name: "{{ ec2_volume_path }}"
+        volume_type: "{{ ec2_volume_type }}"
+        voume_size: "{{ ec2_volume_size }}"
+      with_items: "{{ ec2.instance_ids }}"
+      when: "{{ ec2_volume_size > 0 }}"
+
 # Destroy ec2 instance(s)
 #
 
@@ -91,6 +105,9 @@
   tags:
     - destroy
   tasks:
+    - name: "destroy {{ group_name }} volume(s)"
+      ec2_vol:
+
     - name: "destroy {{ group_name }} instance(s)"
       ec2:
         group: "{{ security_groups }}"
