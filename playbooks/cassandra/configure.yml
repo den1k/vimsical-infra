@@ -9,5 +9,8 @@
   become: true
   tags:
     - configure
+  vars:
+    cassandra_conf_dir: /etc/cassandra
+    cassandra_data_dir: "{{ ebs_volume_mount_point }}/cassandra/data"
   roles:
     - { role: cassandra }

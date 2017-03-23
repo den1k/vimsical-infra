@@ -11,8 +11,7 @@
     vpc_subnet_id: "{{ vpc.subnets[0].id }}"
     instance_type: "{{ cassandra_instance_type }}"
     count: "{{ cassandra_instance_count }}"
-    ec2_volume_size: 80
-    ec2_volume_path:
+    ebs_volume_size: 80
 
 # - name: create keyspace
 #   hosts: "{{ tag_Group_{{ cassandra_group_name }}[0] }}"

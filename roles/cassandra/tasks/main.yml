@@ -11,8 +11,17 @@
 
 - name: config dir
   file:
-    path: /etc/cassandra
+    path: "{{ cassandra_conf_dir }}"
     state: directory
+    owner: cassandra
+    group: cassandra
+
+- name: config dir
+  file:
+    path: "{{ cassandra_data_dir }}"
+    state: directory
+    owner: cassandra
+    group: cassandra
 
 - name: config template
   template:
