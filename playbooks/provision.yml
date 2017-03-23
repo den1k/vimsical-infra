@@ -7,5 +7,6 @@
 - include: cassandra/provision.yml
 - include: transactor/provision.yml
 - include: redis/provision.yml
+- include: s3/provision.yml
 - include: api/provision.yml
 - include: alb/provision.yml

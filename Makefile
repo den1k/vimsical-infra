@@ -8,12 +8,12 @@
 
 install-linux:
 	sudo apt-get install python python-pip
-	sudo pip install ansible==2.2 boto
+	sudo pip install ansible==2.2 boto boto3
 
 install-mac:
 	brew install awscli
 	sudo easy_install pip
-	sudo pip install ansible==2.2 boto
+	sudo pip install ansible==2.2 boto boto3
 
 
 # ------------------------------------------------------------------------------

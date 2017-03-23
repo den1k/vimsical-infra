@@ -28,7 +28,7 @@
         chdir: "{{ git_repo_dir }}"
         environment:
           S3_AUDIO_ZONE: "{{ s3_audio_zone }}"
-          S3_AUDIO_BUCKET: "{{ s3_audio_bucket }}"
+          S3_AUDIO_BUCKET: "{{ s3_audio_bucket_name }}"
           # S3_SIGN_PROTOCOL: "http"
           S3_SIGN_HOST: "{{ alb_dns }}"
           # S3_SIGN_PORT: "{{ api_http_port }}"
@@ -45,7 +45,7 @@
       command: >-
         aws s3 cp
         ./resources/public/
-        s3://"{{ s3_web_bucket }}"/
+        s3://"{{ s3_web_bucket_name }}"/
         --recursive --include *.*
       args:
         chdir: "{{ git_repo_dir }}"

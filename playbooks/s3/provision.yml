@@ -1,0 +1,51 @@
+---
+# S3 Buckets
+#
+
+- hosts: localhost
+  connection: local
+  gather_facts: false
+  tasks:
+
+  # Web
+  #
+  - name: create web bucket
+    tags: provision
+    s3_bucket:
+      name: "{{ s3_web_bucket_name }}"
+      state: present
+
+  - name: configure web bucket as a website
+    tags: provision
+    s3_website:
+      name: "{{ s3_web_bucket_name }}"
+      state: present
+
+  - name: set web bucket permissions
+    tags: provision
+    s3:
+      bucket: "{{ s3_web_bucket_name }}"
+      mode: create
+      permission: public-read
+
+  # Audio
+  #
+  - name: create audio bucket
+    tags: provision
+    s3_bucket:
+      name: "{{ s3_audio_bucket_name }}"
+      state: present
+
+  - name: configure audio bucket CORS
+    tags: provision
+    command: >-
+      aws s3api put-bucket-cors
+      --bucket "{{ s3_audio_bucket_name }}"
+      --cors-configuration "file://{{ playbook_dir }}/audio_cors.json"
+
+  - name: set audio bucket permissions
+    tags: provision
+    s3:
+      bucket: "{{ s3_audio_bucket_name }}"
+      mode: create
+      permission: public-read
