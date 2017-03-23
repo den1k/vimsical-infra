@@ -4,7 +4,7 @@
 
 - name: create ebs filesystem
   command: >-
-    mkfs -t ext4 "{{ ebs_volume_device_name }}"
+    mkfs.ext4 "{{ ebs_volume_device_name }}"
   become: true
 
 - name: mount dir
@@ -23,6 +23,6 @@
 
 - name: update fstab
   lineinfile:
-    file: /etc/fstab
+    dest: /etc/fstab
     line: "{{ ebs_volume_device_name }} {{ ebs_volume_mount_point }} auto noatime 0 0"
   become: true

@@ -187,7 +187,7 @@ partitioner: org.apache.cassandra.dht.Murmur3Partitioner
 # will spread data evenly across them, subject to the granularity of
 # the configured compaction strategy.
 # If not set, the default directory is $CASSANDRA_HOME/data/data.
-{% if ebs_volume_device_name %}
+{% if ebs_volume_mount_point %}
 data_file_directories:
     - {{ ebs_volume_mount_point }}/cassandra/data
 {% endif %}

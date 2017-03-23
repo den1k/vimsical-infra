@@ -9,8 +9,19 @@
   become: true
   tags:
     - configure
+
   vars:
     cassandra_conf_dir: /etc/cassandra
     cassandra_data_dir: "{{ ebs_volume_mount_point }}/cassandra/data"
+    cassandra_group: cassandra
+    cassandra_user: cassandra
+
+  pre_tasks:
+    - name: create user
+      become: true
+      user:
+        name: "{{ cassandra_user }}"
+        state: present
+
   roles:
     - { role: cassandra }

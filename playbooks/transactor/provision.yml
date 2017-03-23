@@ -13,7 +13,9 @@
   vars:
     name: "{{ transactor_group_name }}"
     group_name: "{{ transactor_group_name }}"
-    security_groups: [ "{{ ssh_sg_name }}", "{{ transactor_sg_name }}" ]
+    security_groups:
+      - "{{ ssh_sg_name }}"
+      - "{{ transactor_sg_name }}"
     vpc_subnet_id: "{{ vpc.subnets[0].id }}"
     instance_type: "{{ transactor_instance_type }}"
     count: "{{ transactor_instance_count }}"

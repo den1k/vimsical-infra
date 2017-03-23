@@ -1,4 +1,4 @@
-# TODO Overview
+# Overview
 
 ## Usage
 
@@ -52,3 +52,7 @@ The API jar runs as a systemd unit, located in `/etc/systemd/system/vimsica-api.
 ```sh
 journalctl -u vimsical-api.service
 ```
+
+# TODOs
+
+

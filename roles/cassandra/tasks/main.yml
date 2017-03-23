@@ -9,19 +9,24 @@
 - name: get ec2 Facts
   action: ec2_facts
 
-- name: config dir
-  file:
-    path: "{{ cassandra_conf_dir }}"
-    state: directory
-    owner: cassandra
-    group: cassandra
+- name: create group
+  group:
+    state: present
+    name: "{{ cassandra_group }}"
 
 - name: config dir
   file:
-    path: "{{ cassandra_data_dir }}"
     state: directory
-    owner: cassandra
-    group: cassandra
+    path: "{{ cassandra_conf_dir }}"
+    owner: "{{ cassandra_user }}"
+    group: "{{ cassandra_group }}"
+
+- name: data dir
+  file:
+    state: directory
+    path: "{{ cassandra_data_dir }}"
+    owner: "{{ cassandra_user }}"
+    group: "{{ cassandra_group }}"
 
 - name: config template
   template:

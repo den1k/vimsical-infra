@@ -7,13 +7,10 @@
   vars:
     name: "{{ cassandra_group_name }}"
     group_name: "{{ cassandra_group_name }}"
-    security_groups: [ "{{ ssh_sg_name }}", "{{ cassandra_sg_name }}" ]
+    security_groups:
+      - "{{ ssh_sg_name }}"
+      - "{{ cassandra_sg_name }}"
     vpc_subnet_id: "{{ vpc.subnets[0].id }}"
     instance_type: "{{ cassandra_instance_type }}"
     count: "{{ cassandra_instance_count }}"
     ebs_volume_size: 80
-
-# - name: create keyspace
-#   hosts: "{{ tag_Group_{{ cassandra_group_name }}[0] }}"
-#   command: >-
-#     cqlsh -e "create keyspace if not exists {{ cassandra_keyspace_name }} with replication = {'class': 'SimpleStrategy', 'replication_factor': {{ cassandra_replication_factor }} };"

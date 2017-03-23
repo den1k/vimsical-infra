@@ -89,7 +89,7 @@
     - raw: test -e /usr/bin/python || (sudo apt -y update && sudo apt install -y python-minimal)
   roles:
     - { role: ubuntu }
-    - { role: ebs_mount }
+    - { role: ebs_mount, when: ebs_volume_size is defined }
 
 # Destroy ec2 instance(s)
 #
