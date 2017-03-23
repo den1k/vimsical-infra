@@ -2,6 +2,11 @@
 # Frontend deployment playbook
 #
 
+# WARN: This will build and deploy the current source tree, it is this NOT
+# REPRODUCIBLE and should be changed ASAP to use a predetermined branch and om
+# version
+
+
 # NOTE: Get the facts from the ALB so that the compiled cljs code can reference
 # the load balancer as the host for its remotes
 
@@ -27,7 +32,7 @@
 
     - name: compile cljs
       command: >-
-        lein cljsbuild once prod
+        lein with-profile prod cljsbuild once prod
       args:
         chdir: "{{ web_git_repo_dir }}"
       environment:
@@ -35,13 +40,10 @@
         S3_AUDIO_BUCKET: "{{ s3_audio_bucket_name }}"
         # S3_SIGN_PROTOCOL: "http"
         S3_SIGN_HOST: "{{ alb_dns }}"
-        # S3_SIGN_PORT: "{{ api_http_port }}"
         S3_SIGN_PATH: "{{ s3_sign_path }}"
         WEBSOCKET_HOST: "{{ alb_dns }}"
-        # WEBSOCKET_PORT: "{{ api_websocket_port }}"
         WEBSOCKET_PATH: "{{ api_websocket_path }}"
         REMOTE_HOST: "{{ alb_dns }}"
-        # REMOTE_PORT: "{{ api_remote_port }}"
         REMOTE_PATH: "{{ api_remote_path }}"
         CSRF: "{{ api_csrf }}"
 
