@@ -17,29 +17,25 @@
 
     public_cidr_1: 10.0.0.0/24
     public_cidr_2: 10.0.1.0/24
-    public_az_1: "{{ aws_region }}a"
-    public_az_2: "{{ aws_region }}b"
 
     private_cidr_1: 10.0.2.0/24
     private_cidr_2: 10.0.3.0/24
-    private_az_1: "{{ aws_region }}a"
-    private_az_2: "{{ aws_region }}b"
 
     # Subnets
     #
     vpc_subnets:
       - cidr: "{{ public_cidr_1 }}"
-        az: "{{ public_az_1 }}"
-        resource_tags: { "Name": "Public subnet 1", "Az": "{{ public_az_1 }}", "Environment": "{{ env_name }}" }
+        az: "{{ vpc_public_az_1 }}"
+        resource_tags: { "Name": "Public subnet 1", "Az": "{{ vpc_public_az_1 }}", "Environment": "{{ env_name }}" }
       - cidr: "{{ public_cidr_2 }}"
-        az: "{{ public_az_2 }}"
-        resource_tags: { "Name": "Public subnet 2", "Az": "{{ public_az_2 }}", "Environment": "{{ env_name }}" }
+        az: "{{ vpc_public_az_2 }}"
+        resource_tags: { "Name": "Public subnet 2", "Az": "{{ vpc_public_az_2 }}", "Environment": "{{ env_name }}" }
       - cidr: "{{ private_cidr_1 }}"
-        az: "{{ private_az_1 }}"
-        resource_tags: { "Name": "Private subnet 1", "Az": "{{ private_az_1 }}", "Environment": "{{ env_name }}" }
+        az: "{{ vpc_private_az_1 }}"
+        resource_tags: { "Name": "Private subnet 1", "Az": "{{ vpc_private_az_1 }}", "Environment": "{{ env_name }}" }
       - cidr: "{{ private_cidr_2 }}"
-        az: "{{ private_az_2 }}"
-        resource_tags: { "Name": "Private subnet 2", "Az": "{{ private_az_2 }}", "Environment": "{{ env_name }}" }
+        az: "{{ vpc_private_az_2 }}"
+        resource_tags: { "Name": "Private subnet 2", "Az": "{{ vpc_private_az_2 }}", "Environment": "{{ env_name }}" }
 
     # Route table for public subnet
     #

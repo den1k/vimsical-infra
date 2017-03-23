@@ -2,7 +2,7 @@
 # Common ubuntu config
 #
 
-- name: 'install missing deps'
+- name: install missing deps
   raw: sudo apt-get -y install python-minimal aptitude
 
 - name: apt update and ugrade
