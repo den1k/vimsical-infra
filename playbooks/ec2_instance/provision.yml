@@ -65,6 +65,19 @@
       shell: "{{ dynamic_inventory_file }} --refresh-cache > /dev/null"
       when: ec2.changed
 
+    - name: create ebs volumes
+      ec2_vol:
+        region: "{{ aws_region }}"
+        zone: "{{ vpc_public_az_1 }}"
+        instance: "{{ item }}"
+        device_name: "{{ ebs_volume_device_name }}"
+        volume_type: "{{ ebs_volume_type }}"
+        volume_size: "{{ ebs_volume_size }}"
+      with_items: "{{ ec2.instance_ids }}"
+      when:
+        - ebs_volume_size is defined
+        - "{{ ebs_volume_size > 0 }}"
+
 - name: install managed node dependencies
   hosts: "launched_{{ name }}"
   become: yes
@@ -76,20 +89,7 @@
     - raw: test -e /usr/bin/python || (sudo apt -y update && sudo apt install -y python-minimal)
   roles:
     - { role: ubuntu }
-
-- name: create volumes
-  hosts: localhost
-  connection: local
-  gather_facts: false
-  takes:
-    - name: create ebs volumes
-      ec2_vol:
-        instance: "{{ item }}"
-        device_name: "{{ ec2_volume_path }}"
-        volume_type: "{{ ec2_volume_type }}"
-        voume_size: "{{ ec2_volume_size }}"
-      with_items: "{{ ec2.instance_ids }}"
-      when: "{{ ec2_volume_size > 0 }}"
+    - { role: ebs_mount }
 
 # Destroy ec2 instance(s)
 #
@@ -105,9 +105,6 @@
   tags:
     - destroy
   tasks:
-    - name: "destroy {{ group_name }} volume(s)"
-      ec2_vol:
-
     - name: "destroy {{ group_name }} instance(s)"
       ec2:
         group: "{{ security_groups }}"
