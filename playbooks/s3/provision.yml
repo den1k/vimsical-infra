@@ -9,24 +9,42 @@
 
   # Web
   #
-  - name: create web bucket
-    tags: provision
-    s3_bucket:
-      name: "{{ s3_web_bucket_name }}"
-      state: present
-
-  - name: configure web bucket as a website
-    tags: provision
-    s3_website:
-      name: "{{ s3_web_bucket_name }}"
-      state: present
-
-  - name: set web bucket permissions
+  - name: create web bucket permissions
     tags: provision
     s3:
       bucket: "{{ s3_web_bucket_name }}"
       mode: create
       permission: public-read
+
+  #
+  # NOTE do not provide an error_key, redirects are handled by cloudfront
+  #
+  - name: configure web bucket as a website
+    tags: provision
+    s3_website:
+      name: "{{ s3_audio_bucket_name }}"
+      state: present
+
+  - name: set web bucket policy
+    tags: provision
+    s3_bucket:
+      name: "{{ s3_web_bucket_name }}"
+      policy: >
+        {
+          "Version": "2008-10-17",
+          "Statement": [
+            {
+              "Sid": "Allow Public Access to All Objects",
+              "Effect": "Allow",
+              "Principal": {
+                "AWS": "*"
+              },
+              "Action": "s3:GetObject",
+              "Resource": "arn:aws:s3:::{{ s3_web_bucket_name }}/*"
+            }
+          ]
+        }
+      versioning: yes
 
   # Audio
   #
@@ -42,10 +60,3 @@
       aws s3api put-bucket-cors
       --bucket "{{ s3_audio_bucket_name }}"
       --cors-configuration "file://{{ playbook_dir }}/audio_cors.json"
-
-  - name: set audio bucket permissions
-    tags: provision
-    s3:
-      bucket: "{{ s3_audio_bucket_name }}"
-      mode: create
-      permission: public-read
