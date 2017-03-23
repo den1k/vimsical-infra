@@ -1,21 +1,42 @@
 ---
 # Set alb target group facts using the aws cli
 
-- name: gather target group facts
+# NOTE ignore errors because we collect facts in the destroy phase too
+
+# HTTP target
+#
+
+- name: gather http target group facts
   command: >-
-    aws elbv2 describe-target-groups --load-balancer-arn {{ alb_arn }}
-  register: alb_target_groups
+    aws elbv2 describe-target-groups --names {{ alb_http_target_group_name }}
+  register: alb_http_target_group
+  ignore_errors: true
 
 - name: set http target group arn fact
   set_fact:
     alb_http_target_group_arn: "{{ item.TargetGroupArn }}"
-  with_items: "{{ (alb_target_groups.stdout|from_json).TargetGroups }}"
+  with_items: "{{ (alb_http_target_group.stdout|from_json).TargetGroups }}"
   when: item.Port == 80
+  ignore_errors: true
+
+# HTTPS target
+#
+
+- name: gather https target group facts
+  command: >-
+    aws elbv2 describe-target-groups --names {{ alb_https_target_group_name }}
+  register: alb_https_target_group
+  when: env_name == 'prod'
+  ignore_errors: true
+
+# There is a bug that's fixed in ansible 2.3
+# https://github.com/ansible/ansible/commit/4a325b5ea218c1e117603c55dd7f3bc2bd73171c
 
 - name: set https target group arn fact
   set_fact:
     alb_https_target_group_arn: "{{ item.TargetGroupArn }}"
-  with_items: "{{ (alb_target_groups.stdout|from_json).TargetGroups }}"
+  with_items: "{{ (alb_https_target_group.stdout | default('{targetGroups:[]}') | from_json).TargetGroups }}"
   when:
     - item.Port == 443
     - env_name == 'prod'
+  ignore_errors: true
