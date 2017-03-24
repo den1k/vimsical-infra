@@ -16,10 +16,10 @@
         --targets Id={{ hostvars[item].ec2_id }},Port={{ api_http_port }}
       with_items: "{{ groups['tag_Group_' + api_group_name] }}"
 
-    - name: Register instance with alb https target
-      command: >-
-        aws elbv2 register-targets
-        --target-group-arn {{ alb_https_target_group_arn }}
-        --targets Id={{ hostvars[item].ec2_id }},Port={{ api_http_port}}
-      with_items: "{{ groups['tag_Group_' + api_group_name] }}"
-      when: env_name == 'prod'
+    # - name: Register instance with alb https target
+    #   command: >-
+    #     aws elbv2 register-targets
+    #     --target-group-arn {{ alb_https_target_group_arn }}
+    #     --targets Id={{ hostvars[item].ec2_id }},Port={{ api_http_port}}
+    #   with_items: "{{ groups['tag_Group_' + api_group_name] }}"
+    #   when: env_name == 'prod'

@@ -28,15 +28,15 @@
         --vpc-id {{ vpc.vpc_id }}
         --health-check-protocol HTTP
 
-    - name: create https target group
-      command: >-
-        aws elbv2 create-target-group
-        --name {{ alb_https_target_group_name }}
-        --protocol HTTPS
-        --port 443
-        --vpc-id {{ vpc.vpc_id }}
-        --health-check-protocol HTTP
-      when: env_name == 'prod'
+    # - name: create https target group
+    #   command: >-
+    #     aws elbv2 create-target-group
+    #     --name {{ alb_https_target_group_name }}
+    #     --protocol HTTPS
+    #     --port 443
+    #     --vpc-id {{ vpc.vpc_id }}
+    #     --health-check-protocol HTTP
+    #   when: env_name == 'prod'
 
     - include: target_group_facts.yml
 
@@ -49,15 +49,15 @@
         --default-actions Type=forward,TargetGroupArn={{ alb_http_target_group_arn }}
 
 
-    - name: create alb https listener
-      command: >-
-        aws elbv2 create-listener
-        --load-balancer-arn {{ alb_arn }}
-        --protocol HTTPS
-        --port 443
-        --certificates {{ prod_ssl_cert_arn }}
-        --default-actions Type=forward,TargetGroupArn={{ alb_https_target_group_arn }}
-      when: env_name == 'prod'
+    # - name: create alb https listener
+    #   command: >-
+    #     aws elbv2 create-listener
+    #     --load-balancer-arn {{ alb_arn }}
+    #     --protocol HTTPS
+    #     --port 443
+    #     --certificates {{ prod_ssl_cert_arn }}
+    #     --default-actions Type=forward,TargetGroupArn={{ alb_https_target_group_arn }}
+    #   when: env_name == 'prod'
 
 - hosts: localhost
   connection: local
@@ -79,11 +79,11 @@
         aws elbv2 delete-target-group --target-group-arn {{ alb_http_target_group_arn }}
       ignore_errors: true
 
-    - name: destroy alb https target group
-      command: >-
-        aws elbv2 delete-target-group --target-group-arn {{ alb_https_target_group_arn }}
-      when: env_name == 'prod'
-      ignore_errors: true
+    # - name: destroy alb https target group
+    #   command: >-
+    #     aws elbv2 delete-target-group --target-group-arn {{ alb_https_target_group_arn }}
+    #   when: env_name == 'prod'
+    #   ignore_errors: true
 
     - name: destroy alb
       command: >-
