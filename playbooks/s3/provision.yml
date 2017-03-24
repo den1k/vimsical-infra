@@ -22,7 +22,7 @@
   - name: configure web bucket as a website
     tags: provision
     s3_website:
-      name: "{{ s3_audio_bucket_name }}"
+      name: "{{ s3_web_bucket_name }}"
       state: present
 
   - name: set web bucket policy
