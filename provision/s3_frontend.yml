@@ -1,0 +1,47 @@
+---
+# S3 Buckets
+#
+
+# NOTE do not provide an error_key, redirects are handled by cloudfront
+
+
+- hosts: localhost
+  connection: local
+  tags:
+    - provision
+    - s3
+    - frontend
+
+  tasks:
+    - name: create web bucket permissions
+      s3:
+        bucket: "{{ s3_frontend_bucket_name }}"
+        mode: create
+        permission: public-read
+
+    - name: configure web bucket as a website
+      tags: provision
+      s3_website:
+        name: "{{ s3_frontend_bucket_name }}"
+        state: present
+
+    - name: set web bucket policy
+      tags: provision
+      s3_bucket:
+        name: "{{ s3_frontend_bucket_name }}"
+        versioning: yes
+        policy: >
+          {
+            "Version": "2008-10-17",
+            "Statement": [
+              {
+                "Sid": "Allow Public Access to All Objects",
+                "Effect": "Allow",
+                "Principal": {
+                  "AWS": "*"
+                },
+                "Action": "s3:GetObject",
+                "Resource": "arn:aws:s3:::{{ s3_frontend_bucket_name }}/*"
+              }
+            ]
+          }

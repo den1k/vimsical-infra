@@ -1,0 +1,3 @@
+---
+cassandra_user: cassandra
+cassandra_version: "3.10"

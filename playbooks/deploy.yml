@@ -1,5 +1,15 @@
 # Deployment playbook
 #
 
-- include: ./deploy/api.yml
-- include: ./deploy/web.yml
+# XXX duplicated from build/backend.yml
+- include: ../deploy/backend.yml
+  vars:
+    repo_dir: /tmp/backend
+    jar_name: vimsical.jar
+    jar_path: "{{ repo_dir }}/target/{{ jar_name }}"
+
+# XXX duplicated from build/frontend.yml
+- include: ../deploy/frontend.yml
+  vars:
+    repo_dir: /tmp/frontend
+    frontend_site_dir: "{{ repo_dir }}/resources/public/"

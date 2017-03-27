@@ -1,0 +1,6 @@
+---
+# Build playbook
+#
+
+- include: ../build/frontend.yml
+- include: ../build/backend.yml

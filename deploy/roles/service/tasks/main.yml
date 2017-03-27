@@ -1,0 +1,20 @@
+---
+# Systemd unit
+
+- name: create systemd unit folder
+  become: true
+  file: path=/etc/systemd/system state=directory
+
+- name: copy systemd unit file
+  become: true
+  template:
+    src: unit.service.j2
+    dest: "/etc/systemd/system/{{ service_name }}.service"
+
+- name: start service
+  become: true
+  systemd:
+    enabled: true
+    daemon_reload: true
+    name: "{{ service_name }}"
+    state: restarted

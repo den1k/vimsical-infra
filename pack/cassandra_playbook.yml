@@ -1,0 +1,11 @@
+---
+
+- hosts: all
+  become: yes
+  remote_user: root
+  gather_facts: no # this is critical
+  pre_tasks:
+    - raw: test -e /usr/bin/python || (sudo apt -y update && sudo apt install -y python-minimal)
+  roles:
+    - { role: ubuntu }
+    - { role: ebs_mount, when: ebs_volume_size is defined }

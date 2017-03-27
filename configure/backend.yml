@@ -1,0 +1,21 @@
+---
+# Configure backend hosts
+#
+
+- hosts: "tag_Group_{{ backend_group_name }}"
+  tags:
+    - configure
+    - backend
+
+  vars:
+    vimsical_user: vimsical
+
+  roles:
+    - jdk8
+
+  tasks:
+    - name: create user
+      become: true
+      user:
+        name: "{{ vimsical_user }}"
+        state: present

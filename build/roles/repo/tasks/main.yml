@@ -1,0 +1,15 @@
+---
+# Repo
+
+- name: "create {{ repo_dir }}"
+  file: path={{ repo_dir }} state=directory
+
+- name: "pulling {{ repo_version }} from: {{ repo_url }}"
+  git:
+    repo: "{{ repo_url }}"
+    version: "{{ repo_version }}"
+    dest: "{{ repo_dir }}"
+    update: true
+    force: true
+    accept_hostkey: true
+  register: repo_clone

@@ -1,0 +1,31 @@
+---
+# Cassandra nodes
+#
+
+- host: localhost
+  connection: local
+  tags:
+    - provision
+    - bastion
+
+  tasks:
+
+    - name: provision bastion instance
+      include: ../plays/ec2_instance.yml
+      vars:
+        name: bastion
+        group_name: bastion
+        security_groups:
+          - "{{ ssh_sg_name }}"
+        instance_type: t1.micro
+        count: 1
+
+    - name: install ansible
+      pip: name=ansible version=2.3
+
+    - include_role:
+        role: repo
+        vars:
+          - repo_url: git@github.com:vimsical/vimsical-infra.git
+          - repo_version: v2
+          - repo_dir: ~/vimsical-infra

@@ -1,0 +1,78 @@
+---
+# API Deployment playbook
+#
+
+- hosts: "tag_Group_{{ backend_group_name }}"
+
+  tags:
+    - deploy
+    - backend
+
+  vars:
+    #
+    # JVM
+    #
+    jvm_options: "-Xmx{{ backend_jvm_ram }} -Xms{{ backend_jvm_ram }}"
+    jar_dir: "/home/{{ backend_user}}"
+    jar_name: "vimsical.jar"
+    #
+    # Systemd
+    #
+    service_name: "vimsical-backend"
+    service_user: "{{ backend_user }}"
+    service_exec_command: "/usr/bin/java {{ jvm_options }} -jar {{ jar_dir }}/{{ jar_name }}"
+    #
+    # Runtime
+    #
+    service_env:
+      ENV: "{{ env_name }}"
+      #
+      # Audio
+      #
+      S3_AUDIO_ZONE: "{{ aws_region }}"
+      S3_AUDIO_BUCKET: "{{ s3_audio_bucket_name }}"
+      #
+      # Web server
+      #
+      HTTP_PORT: "{{ backend_http_port }}"
+      HTTP_HOST: "{{ backend_http_bind_host }}"
+      #
+      # Datomic
+      #
+      DATOMIC_PROTOCOL: "{{ transactor_protocol}}"
+      AWS_REGION: "{{ aws_region }}"
+      AWS_ACCESS_KEY_ID: "{{ aws_access_key_id }}"
+      AWS_SECRET_ACCESS_KEY: "{{ aws_secret_access_key }}"
+      DATOMIC_DDB_TABLE: "{{ datomic_ddb_table_name }}"
+      DATOMIC_NAME: "{{ transactor_db_name }}"
+      #
+      # Cassandra
+      #
+      CASSANDRA_CONTACT_POINTS: "{{ groups['tag_Group_' + cassandra_group_name] | map('extract', hostvars, ['ec2_private_ip_address']) | join(',') }}"
+      CASSANDRA_PORT: "{{ cassandra_port }}"
+      CASSANDRA_KEYSPACE: "{{ cassandra_keyspace_name }}"
+      CASSANDRA_REPLICATION_FACTOR: "{{ cassandra_replication_factor }}"
+      #
+      # Redis
+      #
+      REDIS_HOST: "{{ groups['elasticache_cluster_' + redis_group_name][0] }}"
+      REDIS_PORT: "{{ redis_port }}"
+
+  tasks:
+    - name: create server jar_dir
+      file:
+        path: "{{ jar_dir }}"
+        state: directory
+        owner: "{{ backend_user }}"
+
+    - name: push jar to server
+      become: true
+      copy:
+        src: "{{ jar_path }}"
+        dest: "{{ jar_dir }}/{{ jar_name }}"
+
+    - name: configure service
+      include_role:
+        role: service
+      vars:
+        service_user: "{{ backend_user }}"

@@ -1,0 +1,187 @@
+---
+# Provision cloudfront frontend distribution
+
+# WARN doesn't work, can't properly configure SSL outside of us-east-1
+
+- hosts: localhost
+  connection: local
+
+  tags:
+    - provision
+    - frontend
+    - cloudfront
+
+  vars:
+    s3_audio_id: "{{ env_name }}-S3-audio-bucket"
+    s3_frontend_id: "{{ env_name }}-S3-frontend-bucket"
+    distribution_config: >-
+      '{
+         "DistributionConfig": {
+           "CallerReference": "{{ env_name }}",
+           "Aliases": {
+             "Quantity": 1,
+             "Items": [
+               "{{ frontend_domain_name }}"
+             ]
+           },
+           "DefaultRootObject": "index.html",
+           "Origins": {
+             "Quantity": 1,
+             "Items": [
+               {
+                 "Id": "{{ s3_frontend_id }}",
+                 "DomainName": "{{ s3_frontend_bucket_domain_name }}",
+                 "S3OriginConfig": {
+                   "OriginAccessIdentity": ""
+                 }
+               }
+             ]
+           },
+           "DefaultCacheBehavior": {
+             "TargetOriginId": "{{ s3_frontend_id }}",
+             "ForwardedValues": {
+               "QueryString": true,
+               "Cookies": {
+                 "Forward": "all"
+               },
+               "Headers": {
+                 "Quantity": 1,
+                 "Items": [
+                   "Origin"
+                 ]
+               }
+             },
+             "TrustedSigners": {
+               "Enabled": false,
+               "Quantity": 0,
+               "Items": [ ]
+             },
+             "ViewerProtocolPolicy": "redirect-to-https",
+
+             "AllowedMethods": {
+               "Quantity": 7,
+               "Items": [
+                 "GET",
+                 "HEAD",
+                 "POST",
+                 "PUT",
+                 "PATCH",
+                 "OPTIONS",
+                 "DELETE"
+               ],
+               "CachedMethods": {
+                 "Quantity": 2,
+                 "Items": [
+                   "GET",
+                   "HEAD"
+                 ]
+               }
+             },
+             "SmoothStreaming": false,
+             "DefaultTTL": 0,
+             "MinTTL": 0,
+             "MaxTTL": 0,
+             "Compress": true
+           },
+           "CacheBehaviors": {
+             "Quantity": 1,
+             "Items": [
+               {
+                 "PathPattern": "*",
+                 "TargetOriginId": "{{ s3_frontend_id }}",
+                 "ForwardedValues": {
+                   "QueryString": true,
+                   "Cookies": {
+                     "Forward": "all"
+                   },
+                   "Headers": {
+                     "Quantity": 1,
+                     "Items": [
+                       "Origin"
+                     ]
+                   }
+                 },
+                 "TrustedSigners": {
+                   "Enabled": false,
+                   "Quantity": 0,
+                   "Items": [ ]
+                 },
+                 "ViewerProtocolPolicy": "redirect-to-https",
+                 "AllowedMethods": {
+                   "Quantity": 7,
+                   "Items": [
+                     "GET",
+                     "HEAD",
+                     "POST",
+                     "PUT",
+                     "PATCH",
+                     "OPTIONS",
+                     "DELETE"
+                   ],
+                   "CachedMethods": {
+                     "Quantity": 2,
+                     "Items": [
+                       "GET",
+                       "HEAD"
+                     ]
+                   }
+                 },
+                 "SmoothStreaming": false,
+                 "DefaultTTL": 0,
+                 "MinTTL": 0,
+                 "MaxTTL": 0,
+                 "Compress": true
+               }
+             ]
+           },
+           "CustomErrorResponses": {
+             "Quantity": 2,
+             "Items": [
+               {
+                 "ErrorCode": 403,
+                 "ResponsePagePath": "/index.html",
+                 "ResponseCode": "200",
+                 "ErrorCachingMinTTL": 86400
+               },
+               {
+                 "ErrorCode": 404,
+                 "ResponsePagePath": "/index.html",
+                 "ResponseCode": "200",
+                 "ErrorCachingMinTTL": 86400
+               }
+             ]
+           },
+           "PriceClass": "PriceClass_All",
+           "Enabled": true,
+           "ViewerCertificate": {
+             "IAMCertificateId": "{{ ssl_cert_id }}",
+             "SSLSupportMethod": "sni-only",
+             "MinimumProtocolVersion": "TLSv1"
+           },
+           "Comment": "",
+           "HttpVersion": "http2",
+           "IsIPV6Enabled": true
+         }
+       }'
+
+  tasks:
+    - name: enable cloudfront cli
+      command: >-
+        aws configure set preview.cloudfront true
+
+    - name: create distribution
+      command: >-
+        aws cloudfront create-distribution --cli-input-json {{ distribution_config }}
+
+- hosts: localhost
+  connection: local
+
+  tags:
+    - destroy
+    - frontend
+    - cloudfront
+
+  tasks:
+    - name: create distribution
+      command: >-
+        aws cloudfront delete-distribution

@@ -1,0 +1,31 @@
+---
+# Frontend deployment playbook
+#
+
+# WARN: This will build and deploy the current source tree, it is this NOT
+# REPRODUCIBLE and should be changed ASAP to use a predetermined branch and om
+# version
+
+
+# NOTE: Get the facts from the ALB so that the compiled cljs code can reference
+# the load balancer as the host for its remotes
+
+- hosts: localhost
+  tags:
+    - deploy
+    - frontend
+
+  tasks:
+    - name: upload artifacts to s3
+      s3_sync:
+        bucket: "{{ s3_frontend_bucket_name }}"
+        file_root: "{{ frontend_site_dir }}"
+        include: "*.*"
+      register: s3_upload
+
+    - name: Invalidate cloudfront distribution
+      command: >-
+        aws cloudfront create-invalidation
+        --distribution-id "{{ frontend_cloudfront_distribution_id }}"
+        --paths "/*"
+      when: s3_upload.changed and frontend_cloudfront_distribution_id is defined

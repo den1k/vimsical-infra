@@ -1,0 +1,22 @@
+---
+# Staging vars
+#
+
+# DNS
+#
+frontend_domain_name: "staging.vimsical.com"
+backend_domain_name: "api-staging.vimsical.com"
+
+# SSL
+#
+ssl_cert_arn: "arn:aws:acm:us-west-2:120248402505:certificate/68df81a2-3c6d-4c4f-a59c-b1f52fc929c2"
+ssl_api_cert_arn: "{{ ssl_cert_arn }}"
+
+# Cloudfront
+#
+frontend_cloudfront_distribution_id: "E2XEDDVR2ACL9C"
+frontend_cloudfront_domain_name: staging.vimsical.com
+
+# ALB
+#
+alb_domain_name: staging-api.vimsical.com

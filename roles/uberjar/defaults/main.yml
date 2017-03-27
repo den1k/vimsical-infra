@@ -1,9 +1,0 @@
----
-git_repo_dir: /tmp/clone
-uberjar_command: "{{ lein }} uberjar"
-uberjar_args: ""
-uberjar_environment:
-service_type: simple
-service_user: root
-service_target: multi-user.target
-service_restart: always

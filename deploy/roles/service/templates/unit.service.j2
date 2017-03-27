@@ -1,0 +1,14 @@
+[Unit]
+Description={{ service_description }}
+
+[Service]
+{% for k, v in service_env.iteritems() %}
+Environment="{{ k }}={{ v }}"
+{% endfor %}
+ExecStart={{ service_exec_command }}
+Type={{ service_type }}
+User={{ service_user }}
+Restart={{ service_restart }}
+RestartSec=30
+[Install]
+WantedBy={{ service_target }}

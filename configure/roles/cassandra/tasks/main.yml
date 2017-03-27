@@ -1,0 +1,65 @@
+---
+# Install and configure cassandra
+#
+
+# NOTE: copy the conf *before* installing the package since apt will auto-start
+# on install. This would cause cassandra to create a 'Test Cluster' from the
+# default config and we'll error on restart
+
+- name: get ec2 Facts
+  action: ec2_facts
+
+- name: create group
+  group:
+    state: present
+    name: "{{ cassandra_group }}"
+
+- name: config dir
+  file:
+    state: directory
+    path: "{{ cassandra_conf_dir }}"
+    owner: "{{ cassandra_user }}"
+    group: "{{ cassandra_group }}"
+
+- name: data dir
+  file:
+    state: directory
+    path: "{{ cassandra_data_dir }}"
+    owner: "{{ cassandra_user }}"
+    group: "{{ cassandra_group }}"
+
+- name: config template
+  template:
+    src: cassandra.yaml.j2
+    dest: /etc/cassandra/cassandra.yaml
+
+- name: env template
+  template:
+    src: cassandra-env.sh.j2
+    dest: /etc/cassandra/cassandra-env.sh
+
+- name: add cassandra repository
+  apt_repository:
+    repo: "deb http://www.apache.org/dist/cassandra/debian 310x main"
+    filename: "cassandra.sources.list"
+  register: repo
+
+- name: add cassandra repository key
+  when: repo.changed
+  apt_key:
+    url: "https://www.apache.org/dist/cassandra/KEYS"
+
+- name: install package
+  apt:
+    pkg: "cassandra={{ cassandra_version }}"
+    update_cache: true
+
+- name: stop cassandra
+  service:
+    name: cassandra
+    state: stopped
+
+- name: start cassandra
+  service:
+    name: cassandra
+    state: started

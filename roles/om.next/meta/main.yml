@@ -1,4 +1,0 @@
----
-dependencies:
-  - { role: lein }
-  - { role: github }

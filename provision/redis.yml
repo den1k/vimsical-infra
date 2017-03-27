@@ -1,0 +1,56 @@
+---
+# Redis on elasticache
+#
+
+# NOTE elasticache has specific restrictions on cluster names that prevent us
+# from using the group_name. Should we switch to using hyphens?
+
+- name: provision redis elasticache cluster
+  hosts: localhost
+  connection: local
+  gather_facts: false
+  tags: provision
+  tasks:
+    - name: create cluster subnet group
+      elasticache_subnet_group:
+        state: present
+        name: "{{ cluster_subnet_name }}"
+        description: "Default redis subnet group"
+        region: "{{ aws_region }}"
+        subnets:
+          - "{{ vpc.subnets[0].id }}"
+
+    - name: create cluster
+      elasticache:
+        state: present
+        engine: redis
+        name: "{{ cluster_name }}"
+        region: "{{ aws_region }}"
+        node_type: "{{ redis_instance_type }}"
+        num_nodes: "{{ redis_instance_count }}"
+        cache_port: "{{ redis_port }}"
+        cache_security_groups: [] # Must be empty with vpc
+        cache_subnet_group: "{{ cluster_subnet_name }}"
+        security_group_ids: "{{ redis_sg.group_id }}"
+        zone: "{{ cluster_az }}"
+      register: redis
+
+- name: destroy redis elasticache cluster
+  hosts: localhost
+  connection: local
+  gather_facts: false
+  tags: destroy
+  tasks:
+    - name: destroy cluster
+      elasticache:
+        state: absent
+        name: "{{ cluster_name }}"
+        region: "{{ aws_region }}"
+        zone: "{{ cluster_az }}"
+        wait: true
+
+    - name: destroy cluster subnet group
+      elasticache_subnet_group:
+        state: absent
+        name: "{{ cluster_subnet_name }}"
+        region: "{{ aws_region }}"
