@@ -1,0 +1,11 @@
+---
+
+hosts: localhost
+tasks:
+  - name: template
+    template:
+      src: cassandra_packer.json.j2
+      dest: cassandra_packer.json
+
+  - name: packer
+    command:

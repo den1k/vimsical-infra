@@ -1,0 +1,72 @@
+---
+# S3 Buckets
+#
+
+- hosts: localhost
+  connection: local
+  gather_facts: false
+
+  vars:
+    cors_config: >-
+      {
+        "CORSConfiguration": {
+          "CORSRules": [
+            {
+              "AllowedOrigins": [
+                "*"
+              ],
+              "AllowedMethods": [
+                "GET",
+                "POST"
+              ],
+              "MaxAgeSeconds": 3000,
+              "AllowedHeaders": [
+                "*"
+              ],
+              "ExposeHeaders": [
+                "Etag"
+              ]
+            }
+          ]
+        }
+      }
+
+  tasks:
+
+  - name: create audio bucket
+    tags: provision
+    s3_bucket:
+      name: "{{ s3_audio_bucket_name }}"
+      state: present
+
+  - name: configure audio bucket as website
+    tags: provision
+    s3_website:
+      name: "{{ s3_audio_bucket_name }}"
+      state: present
+
+  - name: set audio bucket policy
+    tags: provision
+    s3_bucket:
+      name: "{{ s3_audio_bucket_name }}"
+      versioning: yes
+      policy: >-
+        {
+          "Version": "2008-10-17",
+          "Statement": [
+            {
+              "Sid": "Allow Public Access to All Objects",
+              "Effect": "Allow",
+              "Principal": {
+                "AWS": "*"
+              },
+              "Action": "s3:GetObject",
+              "Resource": "arn:aws:s3:::{{ s3_audio_bucket_name }}/*"
+            }
+          ]
+        }
+
+  - name: configure audio bucket CORS
+    tags: provision
+    command: >-
+      aws s3api put-bucket-cors --bucket "{{ s3_audio_bucket_name }}" --cli-input-json '{{ cors_config }}'

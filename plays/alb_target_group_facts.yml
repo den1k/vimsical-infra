@@ -1,0 +1,20 @@
+---
+# Set alb target group facts using the aws cli
+
+# NOTE ignore errors because we collect facts in the destroy phase too
+
+# HTTP target
+#
+
+- name: gather target group facts
+  command: >-
+    aws elbv2 describe-target-groups --names {{ alb_backend_target_group_name }}
+  register: alb_http_target_group
+  ignore_errors: true
+
+
+- name: set backend target group arn fact
+  set_fact:
+    alb_backend_target_group_arn: "{{ item.TargetGroupArn }}"
+  with_items: "{{ (alb_http_target_group.stdout|from_json).TargetGroups }}"
+  ignore_errors: true

@@ -1,0 +1,17 @@
+---
+# Backend provisioning
+#
+
+- name: provision backend instance(s)
+  include: ../plays/ec2_instance.yml
+  vars:
+    name: "{{ backend_group_name }}"
+    group_name: "{{ backend_group_name }}"
+    security_groups:
+      - "{{ ssh_sg_name }}"
+      - "{{ backend_sg_name }}"
+      - "{{ peer_sg_name }}"
+      - "{{ cassandra_sg_name}}"
+    vpc_subnet_id: "{{ vpc.subnets[0].id }}"
+    instance_type: "{{ backend_instance_type }}"
+    count: "{{ backend_instance_count }}"

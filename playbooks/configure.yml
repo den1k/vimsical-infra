@@ -2,13 +2,8 @@
 # Infrastructure configuration playbook
 #
 
-- hosts: localhost
-  connection: local
-  gather_facts: false
-  roles:
-    - { role: ec2_keypair }
-
-- include: cassandra/configure.yml
-- include: transactor/configure.yml
-- include: api/configure.yml
-- include: alb/configure.yml
+- include: ../plays/ec2_keypair.yml
+- include: ../configure/cassandra.yml
+- include: ../configure/transactor.yml
+- include: ../configure/backend.yml
+- include: ../configure/alb.yml

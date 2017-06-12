@@ -1,12 +1,16 @@
 ---
 # Provision AWS infrastructure
 #
-
-- include: ec2_keypair/provision.yml
-- include: vpc/provision.yml
-- include: cassandra/provision.yml
-- include: transactor/provision.yml
-- include: redis/provision.yml
-- include: s3/provision.yml
-- include: api/provision.yml
-- include: alb/provision.yml
+- include: ../plays/ec2_keypair.yml
+- include: ../provision/vpc.yml
+- include: ../provision/cassandra.yml
+- include: ../provision/transactor.yml
+- include: ../provision/redis.yml
+  vars:
+    cluster_name: "{{ env_name }}-redis"
+    cluster_az: "{{ aws_region }}a" # TODO duplicated from VPC provisioning
+    cluster_subnet_name: "{{ cluster_az }}-redis-cluster-subnet"
+- include: ../provision/s3_frontend.yml
+- include: ../provision/s3_audio.yml
+- include: ../provision/backend.yml
+- include: ../provision/alb.yml

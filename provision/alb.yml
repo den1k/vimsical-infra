@@ -1,0 +1,79 @@
+---
+# Provision ALB
+#
+# NOTE don't attach the VPC's private subnets!
+# NOTE subnets need to be string quoted for the create-load-balancer command
+
+- hosts: localhost
+  connection: local
+  gather_facts: false
+  tags:
+    - provision
+    - alb
+
+  tasks:
+    - name: create alb
+      command: >-
+        aws elbv2 create-load-balancer
+        --name {{ alb_name }}
+        --subnets "{{ vpc.subnets[0].id }}" "{{ vpc.subnets[1].id }}"
+        --security-groups {{ alb_sg.group_id }}
+        --tags Key=Name,Value={{ alb_name }},Key=Group,Value={{ alb_group_name }},Key=Environment,Value={{ env_name }}
+
+    - include: ../plays/alb_facts.yml
+
+    # XXX Not sure if the port should be hard-wired to 80?
+    - name: create backend target group
+      command: >-
+        aws elbv2 create-target-group
+        --name {{ alb_backend_target_group_name }}
+        --protocol HTTP
+        --port {{ backend_http_port }}
+        --vpc-id {{ vpc.vpc_id }}
+        --health-check-protocol HTTP
+        --health-check-path {{ backend_health_check_path }}
+
+    - include: ../plays/alb_target_group_facts.yml
+
+    - name: create http listener
+      command: >-
+        aws elbv2 create-listener
+        --load-balancer-arn {{ alb_arn }}
+        --protocol HTTP
+        --port 80
+        --default-actions Type=forward,TargetGroupArn={{ alb_backend_target_group_arn }}
+
+    - name: create alb https listener
+      command: >-
+        aws elbv2 create-listener
+        --load-balancer-arn {{ alb_arn }}
+        --protocol HTTPS
+        --port 443
+        --certificates CertificateArn={{ ssl_api_cert_arn }}
+        --default-actions Type=forward,TargetGroupArn={{ alb_backend_target_group_arn }}
+
+- hosts: localhost
+  connection: local
+  gather_facts: false
+  tags: destroy
+  tasks:
+
+    - include: ../plays/alb_facts.yml
+    - include: ../plays/alb_target_group_facts.yml
+    - include: ../plays/alb_listeners_facts.yml
+
+    - name: destroy listeners
+      command: >-
+        aws elbv2 delete-listener --listener-arn {{ item }}
+      with_items: "{{ alb_listener_arns }}"
+      ignore_errors: true
+
+    - name: destroy alb backend target group
+      command: >-
+        aws elbv2 delete-target-group --target-group-arn {{ alb_backend_target_group_arn }}
+      ignore_errors: true
+
+    - name: destroy alb
+      command: >-
+        aws elbv2 delete-load-balancer --load-balancer-arn {{ alb_arn }}
+      ignore_errors: true

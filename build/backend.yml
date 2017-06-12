@@ -1,0 +1,50 @@
+---
+# Backend build playbook
+#
+
+ - hosts: localhost
+   connection: local
+
+   tags:
+     - build
+     - backend
+
+   vars:
+     repo_url: "git@github.com:vimsical/vimsical.git"
+     repo_version: circleci
+     repo_dir: /tmp/backend
+     jar_name: vimsical.jar
+     jar_path: "{{ repo_dir }}/tar get/{{ jar_name }}"
+
+   roles:
+     - repo
+
+   tasks:
+
+     - name: clean
+       command: >-
+          bin/lein clean
+       args:
+         chdir: "{{ repo_dir }}"
+       when: repo_clone.changed
+
+     - name: create uberjar
+       command: >-
+         bin/lein with-profile backend uberjar
+       args:
+         chdir: "{{ repo_dir }}"
+         creates: "{{ repo_dir }}/target/{{ jar_name }}"
+       environment:
+         ENV: "{{ env_name }}"
+         #
+         # Audio?
+         #
+         AWS_ACCESS_KEY_ID: "{{ aws_access_key_id }}"
+         AWS_SECRET_ACCESS_KEY: "{{ aws_secret_access_key }}"
+         #
+         # Dependency resolution
+         #
+         DATOMIC_LICENSE_KEY: "{{ datomic_license_key }}"
+         DATOMIC_LOGIN: "{{ datomic_login }}"
+         DATOMIC_PASSWORD: "{{ datomic_password }}"
+       when: repo_clone.changed

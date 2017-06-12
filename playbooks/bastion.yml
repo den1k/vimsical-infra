@@ -1,0 +1,64 @@
+---
+# Bastion node
+#
+
+
+# Provision
+#
+
+- include: ../plays/ec2_instance.yml
+  vars:
+    name: bastion
+    group_name: bastion
+    security_groups:
+      - "{{ ssh_sg_name }}"
+    instance_type: t2.micro
+    count: 1
+
+
+# Configure
+#
+
+- hosts: localhost
+  connection: local
+
+  tags:
+    - provision
+    - bastion
+
+  tasks:
+
+    - name: add ansible PPA
+      become: true
+      apt_repository:
+        repo: ppa:ansible/ansible
+        state: present
+
+    - name: install python and ansible
+      pkg:
+        name: {{ item }}
+        update_cache: true
+        state: present
+      with_items:
+        - software-properties-common
+        - ansible
+
+    - name: aws config dir
+      file:
+        path: ~/.aws
+        state: directory
+
+    - name: aws config file
+      template:
+        src: ../bastion/aws_config.j2
+        dest: ~/.aws/config
+
+    - name : install aws cli
+      command: pip install --upgrade --user awscli
+
+    - include_role:
+        name: repo
+        vars:
+          repo_url: git@github.com:vimsical/vimsical-infra.git
+          repo_version: v2
+          repo_dir: ~/vimsical-infra

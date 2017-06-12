@@ -1,0 +1,18 @@
+---
+# Register Backend instances with the application load balancer
+
+- hosts: localhost
+  connection: local
+
+  tags: configure
+
+  tasks:
+    - include: ../plays/alb_facts.yml
+    - include: ../plays/alb_target_group_facts.yml
+
+    - name: Register instance with backend target
+      command: >-
+        aws elbv2 register-targets
+        --target-group-arn {{ alb_backend_target_group_arn }}
+        --targets Id={{ hostvars[item].ec2_id }},Port={{ backend_http_port }}
+      with_items: "{{ groups['tag_Group_' + backend_group_name] }}"

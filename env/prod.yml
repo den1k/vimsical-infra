@@ -1,0 +1,22 @@
+---
+# Prod vars
+#
+
+# DNS
+#
+frontend_domain_name: "vimsical.com"
+backend_domain_name: "api.vimsical.com"
+
+# SSL
+#
+ssl_cert_arn: "arn:aws:acm:us-east-1:120248402505:certificate/a5ca75c7-6a64-4fa9-95ea-1ab416594747"
+ssl_api_cert_arn: "arn:aws:acm:us-west-2:120248402505:certificate/53d05374-60d4-4868-86fb-3b9b0975bb1c"
+
+# Cloudfront
+#
+frontend_cloudfront_distribution_id: "E1J5CBMQ3Q6WGP"
+frontend_cloudfront_domain_name: vimsical.com
+
+# ALB
+#
+alb_domain_name: api.vimsical.com
