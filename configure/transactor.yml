@@ -5,5 +5,13 @@
 - hosts: "tag_Group_{{ transactor_group_name }}"
   tags:
     - configure
+  vars:
+    datadog_checks:
+      process:
+        init_config:
+        instances:
+          - name: transactor
+            search_string: [ 'datomic' ]
   roles:
     - { role: transactor }
+    - { role: Datadog.datadog, become: yes, ansible_os_family: "Debian" }

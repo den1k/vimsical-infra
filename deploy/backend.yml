@@ -13,14 +13,12 @@
     # JVM
     #
     jvm_options: "-Xmx{{ backend_jvm_ram }} -Xms{{ backend_jvm_ram }} -Dcom.sun.management.jmxremote.port={{ backend_jmx_remote_port }} -Dcom.sun.management.jmxremote.authenticate=false -Dcom.sun.management.jmxremote.ssl=false"
-    jar_dir: "/home/{{ backend_user}}"
-    jar_name: "vimsical.jar"
     #
     # Systemd
     #
     service_name: "vimsical-backend"
     service_user: "{{ backend_user }}"
-    service_exec_command: "/usr/bin/java {{ jvm_options }} -jar {{ jar_dir }}/{{ jar_name }}"
+    service_exec_command: "/usr/bin/java {{ jvm_options }} -jar {{ backend_jar_path }}"
     #
     # Runtime
     #
@@ -61,15 +59,15 @@
   tasks:
     - name: create server jar_dir
       file:
-        path: "{{ jar_dir }}"
+        path: "{{ backend_jar_dir }}"
         state: directory
         owner: "{{ backend_user }}"
 
     - name: push jar to server
       become: true
       copy:
-        src: "{{ jar_path }}"
-        dest: "{{ jar_dir }}/{{ jar_name }}"
+        src: "{{ backend_build_jar_path }}"
+        dest: "{{ backend_jar_path }}"
 
     - name: configure service
       include_role:

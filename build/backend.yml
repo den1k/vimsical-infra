@@ -10,11 +10,11 @@
      - backend
 
    vars:
-     repo_url: "git@github.com:vimsical/vimsical.git"
-     repo_version: circleci
-     repo_dir: /tmp/backend
-     jar_name: vimsical.jar
-     jar_path: "{{ repo_dir }}/tar get/{{ jar_name }}"
+     repo_url: "{{ backend_build_repo_url }}"
+     repo_version: "{{ backend_build_repo_version }}"
+     repo_dir: "{{ backend_build_repo_dir }}"
+     jar_name: "{{ backend_jar_name }}"
+     jar_path: "{{ backend_build_jar_path }}"
 
    roles:
      - repo
@@ -33,7 +33,7 @@
          bin/lein with-profile backend uberjar
        args:
          chdir: "{{ repo_dir }}"
-         creates: "{{ repo_dir }}/target/{{ jar_name }}"
+         creates: "{{ jar_path }}"
        environment:
          ENV: "{{ env_name }}"
          #

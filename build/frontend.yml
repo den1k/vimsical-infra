@@ -10,9 +10,9 @@
     - frontend
 
   vars:
-    repo_url: "git@github.com:vimsical/vimsical.git"
-    repo_version: circleci
-    repo_dir: /tmp/frontend
+    repo_url: "{{ frontend_build_repo_url }}"
+    repo_version: "{{ frontend_build_repo_version }}"
+    repo_dir: "{{ frontend_build_repo_dir }}"
 
   roles:
     - repo
@@ -46,9 +46,4 @@
         S3_SIGN_PATH: "{{ s3_audio_backend_sign_path }}"
         BACKEND_HOST: "{{ alb_domain_name }}"
         BACKEND_PATH: "{{ frontend_backend_path }}"
-      when: repo_clone.changed
-
-    - name: register build artifacts
-      set_fact:
-        frontend_site_dir: "{{ repo_dir }}/resources/public/"
       when: repo_clone.changed
