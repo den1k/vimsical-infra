@@ -9,7 +9,13 @@
 
   vars:
     vimsical_user: vimsical
+
     datadog_checks:
+      process:
+        init_config:
+        instances:
+          - name: backend
+            search_string: [ "{{ backend_jar_name }}" ]
       jmx:
         instances:
           - name: backend
