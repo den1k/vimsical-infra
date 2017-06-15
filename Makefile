@@ -9,12 +9,13 @@
 install-linux:
 	sudo apt-get install python python-pip
 	sudo pip install ansible==2.3 boto boto3
+	sudo ansible-galaxy install Datadog.datadog
 
 install-mac:
 	brew install awscli
 	sudo easy_install pip
 	sudo pip install ansible==2.3 boto boto3
-
+	sudo ansible-galaxy install Datadog.datadog
 
 # ------------------------------------------------------------------------------
 # Vault
