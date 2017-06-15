@@ -13,12 +13,15 @@
   vars:
     cassandra_conf_dir: /etc/cassandra
     cassandra_data_dir: "{{ ebs_volume_mount_point }}/cassandra/data"
+
     cassandra_group: cassandra
     cassandra_user: cassandra
+
     datadog_checks:
       cassandra:
         instances:
           - host: localhost
+            name: cassandra
             port: 7199
             cassandra_aliasing: true
         init_config:

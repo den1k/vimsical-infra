@@ -19,7 +19,7 @@
     - name: upload artifacts to s3
       s3_sync:
         bucket: "{{ s3_frontend_bucket_name }}"
-        file_root: "{{ frontend_site_dir }}"
+        file_root: "{{ frontend_build_site_dir }}"
         include: "*.*"
       register: s3_upload
 
