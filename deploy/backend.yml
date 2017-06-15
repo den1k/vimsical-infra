@@ -12,7 +12,7 @@
     #
     # JVM
     #
-    jvm_options: "-Xmx{{ backend_jvm_ram }} -Xms{{ backend_jvm_ram }}"
+    jvm_options: "-Xmx{{ backend_jvm_ram }} -Xms{{ backend_jvm_ram }} -Dcom.sun.management.jmxremote.port={{ backend_jmx_remote_port }} -Dcom.sun.management.jmxremote.authenticate=false -Dcom.sun.management.jmxremote.ssl=false"
     jar_dir: "/home/{{ backend_user}}"
     jar_name: "vimsical.jar"
     #

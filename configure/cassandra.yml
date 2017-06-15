@@ -15,7 +15,97 @@
     cassandra_data_dir: "{{ ebs_volume_mount_point }}/cassandra/data"
     cassandra_group: cassandra
     cassandra_user: cassandra
-
+    datadog_checks:
+      cassandra:
+        instances:
+          - host: localhost
+            port: 7199
+            cassandra_aliasing: true
+        init_config:
+          conf:
+            - include:
+                domain: org.apache.cassandra.metrics
+                type: ClientRequest
+                scope:
+                  - Read
+                  - Write
+                name:
+                  - Latency
+                  - Timeouts
+                  - Unavailables
+                attribute:
+                  - Count
+                  - OneMinuteRate
+            - include:
+                domain: org.apache.cassandra.metrics
+                type: ClientRequest
+                scope:
+                  - Read
+                  - Write
+                name:
+                  - TotalLatency
+            - include:
+                domain: org.apache.cassandra.metrics
+                type: Storage
+                name:
+                  - Load
+                  - Exceptions
+            - include:
+                domain: org.apache.cassandra.metrics
+                type: ColumnFamily
+                bean_regex:
+                  - .*keyspace=.*
+                name:
+                  - TotalDiskSpaceUsed
+                  - BloomFilterDiskSpaceUsed
+                  - BloomFilterFalsePositives
+                  - BloomFilterFalseRatio
+                  - CompressionRatio
+                  - LiveDiskSpaceUsed
+                  - LiveSSTableCount
+                  - MaxRowSize
+                  - MeanRowSize
+                  - MemtableColumnsCount
+                  - MemtableLiveDataSize
+                  - MemtableSwitchCount
+                  - MinRowSize
+              exclude:
+                keyspace:
+                  - OpsCenter
+                  - system
+                  - system_auth
+                  - system_distributed
+                  - system_schema
+                  - system_traces
+            - include:
+                domain: org.apache.cassandra.metrics
+                type: Cache
+                name:
+                  - Capacity
+                  - Size
+                attribute:
+                  - Value
+            - include:
+                domain: org.apache.cassandra.metrics
+                type: Cache
+                name:
+                  - Hits
+                  - Requests
+                attribute:
+                  - Count
+            - include:
+                domain: org.apache.cassandra.metrics
+                type: ThreadPools
+                path: request
+                name:
+                  - ActiveTasks
+                  - CompletedTasks
+                  - PendingTasks
+                  - CurrentlyBlockedTasks
+            - include:
+                domain: org.apache.cassandra.db
+                attribute:
+                  - UpdateInterval
   pre_tasks:
     - name: create user
       become: true
@@ -25,3 +115,4 @@
 
   roles:
     - { role: cassandra }
+    - { role: Datadog.datadog, become: yes, ansible_os_family: "Debian" }

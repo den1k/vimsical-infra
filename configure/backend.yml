@@ -9,9 +9,32 @@
 
   vars:
     vimsical_user: vimsical
-
+    datadog_checks:
+      jmx:
+        instances:
+          - name: backend
+            host: localhost
+            port: 7199
+        init_config:
+          conf:
+            - include:
+                domain: java.lang
+                type: MemoryPool
+            - include:
+                domain: java.lang
+                type: Threading
+            - include:
+                domain: java.lang
+                type: GarbageCollector
+            - include:
+                domain: java.lang
+                type: Threading
+            - include:
+                domain: java.nio
+                type: BufferPool
   roles:
     - jdk8
+    - { role: Datadog.datadog, become: yes, ansible_os_family: "Debian" }
 
   tasks:
     - name: create user
