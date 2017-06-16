@@ -26,9 +26,16 @@
         chdir: "{{ repo_dir }}"
       when: repo_clone.changed
 
-    - name: compile garden
+    - name: compile css
       command: >-
         bin/lein with-profile frontend,css garden once
+      args:
+        chdir: "{{ repo_dir }}"
+      when: repo_clone.changed
+
+    - name: compile player css
+      command: >-
+        bin/lein with-profile frontend,css-player garden once
       args:
         chdir: "{{ repo_dir }}"
       when: repo_clone.changed
