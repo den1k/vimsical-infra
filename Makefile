@@ -74,4 +74,13 @@ build: env
 deploy: env
 	ansible-playbook playbooks/deploy.yml $(flags) $(extra-vars) --tags "deploy"
 
-all: .vault_pass env provision configure deploy
+web: env
+	ansible-playbook playbooks/deploy.yml $(flags) $(extra-vars) --tags "deploy,frontend"
+
+tunnel-start: env
+	ansible-playbook playbooks/tunnel_start.yml $(flags) $(extra-vars)
+
+tunnel-stop: env
+	ansible-playbook playbooks/tunnel_stop.yml $(extra-vars)
+
+all: .vault_pass env provision configure build deploy

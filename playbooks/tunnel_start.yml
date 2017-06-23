@@ -1,0 +1,14 @@
+---
+# API SSH Tunnel
+#
+
+- hosts: localhost
+  connection: local
+
+  vars:
+    backend_host: "{{ groups['tag_Group_' + backend_group_name] [0] }}"
+
+  tasks:
+    - name: start api tunnel
+      command: >-
+        ssh -i {{ ansible_ssh_private_key_file }} -o ExitOnForwardFailure=yes -fN -T -L {{ backend_tunnel_local_nrepl_port }}:localhost:{{ backend_nrepl_port}} {{ ansible_ssh_user }}@{{ backend_host }}

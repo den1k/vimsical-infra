@@ -1,0 +1,10 @@
+---
+# API SSH Tunnel
+#
+
+- hosts: localhost
+  connection: local
+  tasks:
+    - name: stop api tunnel
+      shell: >-
+        kill $(lsof -t -i:{{ backend_tunnel_local_nrepl_port }})
