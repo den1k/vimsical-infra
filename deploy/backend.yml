@@ -30,6 +30,9 @@
       S3_AUDIO_ZONE: "{{ aws_region }}"
       S3_AUDIO_BUCKET: "{{ s3_audio_bucket_name }}"
       #
+      # nRepl
+      NREPL_PORT: "{{ backend_nrepl_port }}"
+      #
       # Web server
       #
       HTTP_PORT: "{{ backend_http_port }}"
