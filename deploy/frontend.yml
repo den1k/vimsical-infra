@@ -2,11 +2,6 @@
 # Frontend deployment playbook
 #
 
-# WARN: This will build and deploy the current source tree, it is this NOT
-# REPRODUCIBLE and should be changed ASAP to use a predetermined branch and om
-# version
-
-
 # NOTE: Get the facts from the ALB so that the compiled cljs code can reference
 # the load balancer as the host for its remotes
 

@@ -54,3 +54,18 @@
         BACKEND_HOST: "{{ alb_domain_name }}"
         BACKEND_PATH: "{{ frontend_backend_path }}"
       when: repo_clone.changed
+
+    - name: compile player cljs
+      command: >-
+        bin/lein with-profile player cljsbuild once player-prod
+      args:
+        chdir: "{{ repo_dir }}"
+      environment:
+        ENV: "{{ env_name }}"
+        S3_AUDIO_ZONE: "{{ s3_audio_zone }}"
+        S3_AUDIO_BUCKET: "{{ s3_audio_bucket_name }}"
+        S3_SIGN_HOST: "{{ alb_domain_name }}"
+        S3_SIGN_PATH: "{{ s3_audio_backend_sign_path }}"
+        BACKEND_HOST: "{{ alb_domain_name }}"
+        BACKEND_PATH: "{{ frontend_backend_path }}"
+      when: repo_clone.changed

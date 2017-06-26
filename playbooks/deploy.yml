@@ -2,4 +2,4 @@
 #
 
 - include: ../deploy/backend.yml
-#- include: ../deploy/frontend.yml
+- include: ../deploy/frontend.yml
