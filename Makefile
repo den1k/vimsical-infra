@@ -69,13 +69,14 @@ configure: env
 	ansible-playbook playbooks/configure.yml $(flags) $(extra-vars) --tags "configure"
 
 build: env
-	ansible-playbook playbooks/build.yml $(flags) $(extra-vars) --tags "build"
+	ansible-playbook playbooks/build.yml $(flags) $(extra-vars) --tags "frontend,backend"
 
 deploy: env
-	ansible-playbook playbooks/deploy.yml $(flags) $(extra-vars) --tags "deploy"
+	ansible-playbook playbooks/deploy.yml $(flags) $(extra-vars) --tags "frontend,backend"
 
 web: env
-	ansible-playbook playbooks/deploy.yml $(flags) $(extra-vars) --tags "deploy,frontend"
+	ansible-playbook playbooks/build.yml $(flags) $(extra-vars) --tags "frontend"
+	ansible-playbook playbooks/deploy.yml $(flags) $(extra-vars) --tags "frontend"
 
 tunnel-start: env
 	ansible-playbook playbooks/tunnel_start.yml $(flags) $(extra-vars)
