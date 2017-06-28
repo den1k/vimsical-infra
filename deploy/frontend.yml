@@ -18,6 +18,10 @@
         include: "*.*"
       register: s3_upload
 
+    - name: enable cloudfront cli
+      command: >-
+        aws configure set preview.cloudfront true
+
     - name: Invalidate cloudfront distribution
       command: >-
         aws cloudfront create-invalidation
