@@ -59,8 +59,8 @@ extra-vars := \
 bastion: env
 	ansible-playbook playbooks/bastion.yml $(flags) $(extra-vars) --tags "provision,bastion"
 
-destroy: env
-	ansible-playbook playbooks/destroy.yml $(flags) $(extra-vars) --tags "destroy"
+# destroy: env
+# 	ansible-playbook playbooks/destroy.yml $(flags) $(extra-vars) --tags "destroy"
 
 provision: env
 	ansible-playbook playbooks/provision.yml $(flags) $(extra-vars) --tags "provision"
