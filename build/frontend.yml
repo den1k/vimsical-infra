@@ -24,21 +24,6 @@
         bin/lein clean
       args:
         chdir: "{{ repo_dir }}"
-      when: repo_clone.changed
-
-    - name: compile css
-      command: >-
-        bin/lein with-profile frontend,css garden once
-      args:
-        chdir: "{{ repo_dir }}"
-      when: repo_clone.changed
-
-    - name: compile player css
-      command: >-
-        bin/lein with-profile frontend,css-player garden once
-      args:
-        chdir: "{{ repo_dir }}"
-      when: repo_clone.changed
 
     - name: compile cljs
       command: >-
@@ -53,7 +38,6 @@
         S3_SIGN_PATH: "{{ s3_audio_backend_sign_path }}"
         BACKEND_HOST: "{{ alb_domain_name }}"
         BACKEND_PATH: "{{ frontend_backend_path }}"
-      when: repo_clone.changed
 
     - name: compile player cljs
       command: >-
@@ -68,4 +52,15 @@
         S3_SIGN_PATH: "{{ s3_audio_backend_sign_path }}"
         BACKEND_HOST: "{{ alb_domain_name }}"
         BACKEND_PATH: "{{ frontend_backend_path }}"
-      when: repo_clone.changed
+
+    - name: compile css
+      command: >-
+        bin/lein with-profile frontend,css garden once
+      args:
+        chdir: "{{ repo_dir }}"
+
+    - name: compile player css
+      command: >-
+        bin/lein with-profile frontend,css-player garden once
+      args:
+        chdir: "{{ repo_dir }}"
