@@ -78,6 +78,10 @@ web: env
 	ansible-playbook playbooks/build.yml $(flags) $(extra-vars) --tags "frontend"
 	ansible-playbook playbooks/deploy.yml $(flags) $(extra-vars) --tags "frontend"
 
+backend: env
+	ansible-playbook playbooks/build.yml $(flags) $(extra-vars) --tags "backend"
+	ansible-playbook playbooks/deploy.yml $(flags) $(extra-vars) --tags "backend"
+
 tunnel-start: env
 	ansible-playbook playbooks/tunnel_start.yml $(flags) $(extra-vars)
 
